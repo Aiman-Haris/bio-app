@@ -1,0 +1,43 @@
+/* Soft & Fun Education Theme */
+
+:root {
+    /* Core Palette - Strong & Vibrant */
+    --color-coral: #FF5252;
+    /* Vibrant Red/Coral */
+    --color-mint: #2ECC71;
+    /* Vibrant Green */
+    --color-sky: #00A8FF;
+    /* Vibrant Blue */
+    --color-lemon: #FFD32A;
+    /* Vibrant Yellow */
+    --color-teal: #00CEC9;
+    /* Vibrant Teal */
+
+    /* Functional Colors */
+    --color-primary: var(--color-coral);
+    --color-secondary: var(--color-teal);
+    --color-accent: var(--color-lemon);
+
+    /* Soft Backgrounds (Pastels) */
+    --bg-coral-soft: #FFF0F0;
+    --bg-mint-soft: #F0FFF9;
+    --bg-sky-soft: #F0FAFF;
+    --bg-lemon-soft: #FFFEF0;
+    --bg-teal-soft: #EFFFFD;
+
+    /* Neutrals */
+    --bg-page: #FFFCF8;
+    /* Warm off-white */
+    --text-main: #2D3436;
+    --text-muted: #636E72;
+    --text-white: #FFFFFF;
+
+    /* Shapes & Shadows */
+    --radius-xl: 24px;
+    --radius-pill: 999px;
+
+    --shadow-soft: 0 8px 24px -6px rgba(0, 0, 0, 0.08);
+    --shadow-float: 0 12px 32px -8px rgba(0, 0, 0, 0.12);
+    --shadow-button: 0 4px 0 0 rgba(0, 0, 0, 0.1);
+    /* Cute "3D" pressable look */
+}

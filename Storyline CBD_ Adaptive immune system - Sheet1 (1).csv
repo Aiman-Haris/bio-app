@@ -1,0 +1,50 @@
+``,details ,picture
+Story,Ivan goes vacation in Thailand. Enjoys the trip food there too much.  ,
+,got food poisoning. (might be raw meats that have bacteria or street foods that got flies),"sakit perut , street food with flies"
+,Ivan goes to doctor. Undergoes series of tests ,jumpa dr. 
+,doctor checks and diagnosed might be food poisoning and he explains about third line defense so Ivan got nothing to worry. ,
+Decision : Cell-mediated immune response,Decision : Humoral-mediated immune response ,2 different icons for two different responses
+"Q1: When bacteria invade, which cells can be antigen-pesenting cells : macrophage, dendritic cell, phagocyte, pathogen. (must choose 3 to continue)","Statement: when bacteria invade, macrophage, dendritic cells and phagocyte engulfs it and degrades it into antigen fragment",
+animation ,animation engulfing,
+"Q2 : After macrophage engulfs the pathogen, what will it do? : degrades the pathogens into antigen fragments , secrete IL-2, digest itself , hide the antigen","Q1 : After macrophage engulfs the pathogen, what will it do? : degrades the pathogens into antigen fragments , secrete IL-2, digest itself , hide the antigen",
+animation. Story: APC/macrophage presents antigen ,animation. Story: APC/macrophage presents antigen ,
+"Q3: the antigen fragments bind to class II MHC, forming: MHC-antigen complex, hormone-receptor complex, enzyme-substrate complex, membrane attack complex.","Q2: Which MHC does the APCs use to present the antigen fragments on it surface? : Class II MHC, Class I MHC, Class III MHC, Class IV MHC",
+animation : macrophage displays the antigen fragments on class II MHC,animation : macrophage displays the antigen fragments on class II MHC,
+"Q4: Which cell binds to the class II MHC complex on APCs? : Helper T cell, B cell, Natural Killer cell. ","Q3: Which cell binds to the class II MHC complex on APCs? : Helper T cell, B cell, Natural Killer cell. ",
+animation binding with Th cell. ,animation binding with Th cell. ,
+"Q5: Which signal does the APC release to activate Helper T cells?: Interleukin-2 (IL-2) , Interleukin-1 (IL-1), dopamine, acetylcholine","Q4: Which signal does the APC release to activate Helper T cells?: Interleukin-1 (IL-1) , Interleukin-1 (IL-1), dopamine, acetylcholine",
+"Q6: Which accessory receptor is involved in this binding? : CD4, CD8, Interleukin-1, CD16","Q5: Which accessory receptor is involved in this binding? : CD4, CD8, Interleukin-1, CD16",
+animation helper becomes activated,animation helper becomes activated,
+"Q7: What happens to the activated Helper T cells?: Proliferates and differentiates into clones of activated helper T cell and memory helper T cell, Proliferates and differentiates into clones of antibodies and memory helper T cell, Proliferates and differentiates into clones of B cells and memory helper T cell, Proliferates and differentiates into clones of cytotoxic T cell and memory helper T cell","Q6: What happens to the activated Helper T cells?: Proliferates and differentiates into clones of activated helper T cell and memory helper T cell, Proliferates and differentiates into clones of antibodies and memory helper T cell, Proliferates and differentiates into clones of B cells and memory helper T cell, Proliferates and differentiates into clones of cytotoxic T cell and memory helper T cell",
+animation proliferates and differentiates,animation proliferates and differentiates helper T cell,
+"Q8
+What do activated helper T cells release next?: IL-1, IL-2, IL-3, IL-4","animation 2: at the same time, pathogen binds to receptor on B cell. Some antigen taken up by B cell through endocytosis. B cells present the antigen-MHC II complex on the cell surface. ",
+animation secretes IL-2,"Q7: activated helper T cell binds to antigen-MHC complex on B cell with the help of which accessory protein? : CD4, CD8, CD6, CD16",
+"Q9: IL-2 activates which cells? : 
+A. Cytotoxic T cells 
+B. B cells
+C. RBCs
+D. antigen presenting cells","animation CD4, TCR ",
+animation sampai activated cytotoxic T cells ,"Q8: the activated helper T cells then release which cytokines?: IL-1, IL-2, IL-3, IL-4",
+"Q10: What happens to the activated cytotoxic T cells?: Proliferates and differentiates into clones of activated cytotoxic T cell and memory cytotoxic T cell, Proliferates and differentiates into clones of antibodies and memory cytotoxic T cell, Proliferates and differentiates into clones of B cells and memory cytotoxic T cell, Proliferates and differentiates into clones of helper T cell and memory helper T cell",animation secretes IL-2,
+animation sampai proliferate cytotoxic T cell,"Q9: IL-2 activates which cells? : A. B cells 
+C. RBCs D. antigen-presenting cells, Cytotoxic T cells ",
+"Q11: activated cytotoxic T cell migrates and binds to the infected cell via T cell receptor with the helps of which accessory receptor? : CD4, CD8, CD6, CD14","Q10: What happens to the activated B cells?: Proliferates and differentiates into plasma cell and memory B cell, Proliferates and differentiates into clones of antibodies and memory cytotoxic T cell, Proliferates and differentiates into clones of B cells and memory cytotoxic T cell, Proliferates and differentiates into clones of helper T cell and memory helper T cell",
+animation sampai binding CD8,animation sampai plasma and memory B cells,
+"Q12: What substances do cytotoxic T cells release?
+A. Interleukin-1
+B. Perforin and granzymes ⭐
+C. antibodies 
+D. Perforin and granzyme","Q11: Plasma cell produces which protein: antigen, antibodies, pathogens, epitopes",
+animation sampai granzymes secreted,animation plasma cell secretes antibodies ,
+"Q13: What does perforin do?
+A. Creates pores in the infected cell membrane 
+B. causes water and ions to enter the cell
+C. causes cell lysis or apoptosis 
+D. Cytolysis. (must choose all)","Q12: How does the antibody works to protect Ivan?
+A. neutralization
+B. opsonization 
+C. activation of complement system 
+D. detoxification (must choose 3)",
+animation sampai lysis ,Ivan becomes well,
+Congrats. The infected cell has been destroyed. ,Congrats. The extracellular pathogen has been destroyed. ,

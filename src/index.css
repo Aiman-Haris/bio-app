@@ -1,0 +1,445 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+/* ============================================
+   VIBRANT NEO-POP COLOR SYSTEM
+   ============================================ */
+
+:root {
+    /* Super Bright Colors */
+    --color-red: #FF3B30;
+    --color-orange: #FF9500;
+    --color-yellow: #FFCC00;
+    --color-green: #34C759;
+    --color-teal: #00C7BE;
+    --color-blue: #007AFF;
+    --color-pink: #FF2D55;
+
+    /* Dark & Light */
+    --color-black: #1C1C1E;
+    --color-white: #FFFFFF;
+
+    /* Page Backgrounds */
+    --bg-cream: #FFF8E7;
+
+    /* Typography */
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body: 'Nunito', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-cream);
+    color: var(--color-black);
+    font-family: var(--font-body);
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    line-height: 1.1;
+    margin: 0;
+}
+
+/* ============================================
+   VIBRANT UTILITY CLASSES
+   ============================================ */
+
+/* Background Colors */
+.bg-red {
+    background-color: #FF3B30 !important;
+}
+
+.bg-orange {
+    background-color: #FF9500 !important;
+}
+
+.bg-yellow {
+    background-color: #FFCC00 !important;
+}
+
+.bg-green {
+    background-color: #34C759 !important;
+}
+
+.bg-teal {
+    background-color: #00C7BE !important;
+}
+
+.bg-blue {
+    background-color: #007AFF !important;
+}
+
+.bg-pink {
+    background-color: #FF2D55 !important;
+}
+
+.bg-black {
+    background-color: #1C1C1E !important;
+}
+
+.bg-white {
+    background-color: #FFFFFF !important;
+}
+
+.bg-cream {
+    background-color: #FFF8E7 !important;
+}
+
+/* Text Colors */
+.text-red {
+    color: #FF3B30 !important;
+}
+
+.text-orange {
+    color: #FF9500 !important;
+}
+
+.text-yellow {
+    color: #FFCC00 !important;
+}
+
+.text-green {
+    color: #34C759 !important;
+}
+
+.text-teal {
+    color: #00C7BE !important;
+}
+
+.text-blue {
+    color: #007AFF !important;
+}
+
+.text-pink {
+    color: #FF2D55 !important;
+}
+
+.text-black {
+    color: #1C1C1E !important;
+}
+
+.text-white {
+    color: #FFFFFF !important;
+}
+
+/* Bold Border */
+.border-bold {
+    border: 3px solid #1C1C1E !important;
+}
+
+/* Pop Shadows */
+.shadow-pop {
+    box-shadow: 5px 5px 0 #1C1C1E !important;
+}
+
+.shadow-pop-sm {
+    box-shadow: 3px 3px 0 #1C1C1E !important;
+}
+
+.shadow-pop-lg {
+    box-shadow: 8px 8px 0 #1C1C1E !important;
+}
+
+/* ============================================
+   NEO-POP COMPONENT STYLES
+   ============================================ */
+
+/* Card */
+.card-pop {
+    background: white;
+    border: 3px solid #1C1C1E;
+    border-radius: 24px;
+    box-shadow: 6px 6px 0 #1C1C1E;
+    padding: 24px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-pop:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 9px 9px 0 #1C1C1E;
+}
+
+/* Button */
+.btn-pop {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 32px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 18px;
+    border: 3px solid #1C1C1E;
+    border-radius: 16px;
+    box-shadow: 4px 4px 0 #1C1C1E;
+    cursor: pointer;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.btn-pop:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #1C1C1E;
+}
+
+.btn-pop:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0 #1C1C1E;
+}
+
+.btn-pop:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: 4px 4px 0 #1C1C1E !important;
+}
+
+/* Badge */
+.badge-pop {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 14px;
+    border: 2px solid #1C1C1E;
+    border-radius: 100px;
+    box-shadow: 2px 2px 0 #1C1C1E;
+}
+
+/* ============================================
+   SCENE BACKGROUNDS
+   ============================================ */
+
+.scene-thailand {
+    background: linear-gradient(180deg, #FEF3C7 0%, #FDE68A 50%, #FBBF24 100%);
+}
+
+.scene-sick {
+    background: linear-gradient(180deg, #D1FAE5 0%, #A7F3D0 50%, #6EE7B7 100%);
+}
+
+.scene-hospital {
+    background: linear-gradient(180deg, #E0F2FE 0%, #BAE6FD 50%, #7DD3FC 100%);
+}
+
+.scene-bloodstream {
+    background: linear-gradient(180deg, #312E81 0%, #4338CA 50%, #6366F1 100%);
+}
+
+.scene-victory {
+    background: linear-gradient(180deg, #34C759 0%, #22C55E 50%, #16A34A 100%);
+}
+
+/* ============================================
+   DIALOGUE BOX
+   ============================================ */
+
+.dialogue-box {
+    background: white;
+    border: 4px solid #1C1C1E;
+    border-radius: 24px;
+    box-shadow: 8px 8px 0 #1C1C1E;
+    padding: 32px;
+    position: relative;
+}
+
+.dialogue-box::before {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 40px;
+    width: 0;
+    height: 0;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-top: 20px solid #1C1C1E;
+}
+
+.dialogue-box::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 44px;
+    width: 0;
+    height: 0;
+    border-left: 16px solid transparent;
+    border-right: 16px solid transparent;
+    border-top: 16px solid white;
+}
+
+/* ============================================
+   CHARACTER CARD
+   ============================================ */
+
+.character-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: white;
+    border: 3px solid #1C1C1E;
+    border-radius: 20px;
+    box-shadow: 4px 4px 0 #1C1C1E;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.character-card:hover:not(.selected):not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #1C1C1E;
+}
+
+.character-card.selected {
+    background: #D1FAE5;
+    border-color: #34C759;
+    box-shadow: 4px 4px 0 #34C759;
+}
+
+.character-card.wrong {
+    background: #FEE2E2;
+    border-color: #FF3B30;
+    box-shadow: 4px 4px 0 #FF3B30;
+}
+
+/* ============================================
+   CHOICE BUTTON
+   ============================================ */
+
+.choice-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    padding: 20px 24px;
+    background: white;
+    border: 3px solid #1C1C1E;
+    border-radius: 16px;
+    box-shadow: 4px 4px 0 #1C1C1E;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: var(--font-body);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--color-black);
+}
+
+.choice-btn:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #1C1C1E;
+    background: #FFF8E7;
+}
+
+.choice-btn.selected {
+    background: #FFCC00;
+}
+
+.choice-btn.correct {
+    background: #34C759;
+    color: white;
+    border-color: #34C759;
+    box-shadow: 4px 4px 0 #22C55E;
+}
+
+.choice-btn.incorrect {
+    background: #FF3B30;
+    color: white;
+    border-color: #FF3B30;
+    box-shadow: 4px 4px 0 #DC2626;
+}
+
+.choice-btn:disabled {
+    cursor: default;
+}
+
+/* ============================================
+   PROGRESS BAR
+   ============================================ */
+
+.progress-bar {
+    height: 12px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid #1C1C1E;
+    border-radius: 100px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: #FFCC00;
+    transition: width 0.3s ease;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.animate-bounce {
+    animation: bounce 1s ease infinite;
+}
+
+.animate-pulse {
+    animation: pulse 2s ease infinite;
+}
+
+.animate-shake {
+    animation: shake 0.3s ease;
+}
