@@ -1,87 +1,116 @@
-# Task: Narrative Education Game - Visual Revamp
+# Immune System Adventure - Task Tracker
 
-## Status: COMPLETE
+## Project Status: ✅ Complete (Full-Screen Redesign)
 
-## Completed Features
+### Latest Changes (Session 6)
+- **QuestionLayout integration** complete for all interactive scenes
+- **App.jsx Refactor**: robust progress tracking and cleaner rendering
+- **GameOverScreen**: Extracted and redesigned
+- **PathwayChoice**: Updated to QuestionLayout
 
-### Core Visual System
-- [x] Vibrant Neo-Pop color scheme (CSS variables)
-- [x] Colorful character avatars (react-nice-avatar for humans, react-kawaii for cells)
-- [x] Face expressions based on mood detection
-- [x] Cinematic narration overlay (no avatar, floating text)
-- [x] Speech bubble dialogue style
+---
 
-### Game Mechanics
-- [x] Lives system (3 lives, game over when depleted)
-- [x] Lives display in HUD
-- [x] Game Over screen with restart
-- [x] Progress bar
-- [x] Previous speaker tracking (skip animation if same)
+## Design System
 
-### Interaction Types (10 TOTAL)
-1. [x] **dialogue** - Story narration with character
-2. [x] **choice** - Single choice MCQ
-3. [x] **recruit** - Multi-select team building
-4. [x] **action** - Single button action (Engulf, Attack, Present)
-5. [x] **ordering** - Drag to reorder sequence
-6. [x] **matching** - Click to match terms/definitions
-7. [x] **fill_blank** - Type the missing word
-8. [x] **true_false** - True/False questions
-9. [x] **category_sort** - Sort items into categories
-10. [x] **timer** - MCQ with countdown pressure
+### Dialogue Layout (Story)
+```
+┌─────────────┬─────────────────────────┬─────────────┐
+│   IVAN      │       CONTENT           │   DOCTOR    │
+│   (280px)   │       (flex)            │   (280px)   │
+└─────────────┴─────────────────────────┴─────────────┘
+```
 
-### Finales
-- [x] AttackFinale (Cytotoxic T path)
-- [x] AntibodyFinale (Humoral path)
-- [x] VictoryScene with celebration
+### Question Layout (Interactive)
+```
+┌─────────────┬─────────────────────────┬─────────────┐
+│  PROGRESS   │       CONTENT           │   VISUAL    │
+│   (200px)   │       (flex)            │   (200px)   │
+│   Lives/Act │   Game Mechanics        │   Kawaii    │
+└─────────────┴─────────────────────────┴─────────────┘
+```
 
-### Story Data Updates
-- [x] Randomized answer positions (not always 'a')
-- [x] Mixed interaction types per path
-- [x] Cell-Mediated: recruit, action, fill_blank, true_false, timer, category_sort, ordering, matching, choice
-- [x] Humoral: fill_blank, true_false, timer, choice, category_sort, matching
+###- [x] Create project structure
+- [x] Implement core game engine (App.jsx)
+- [x] Basic character avatars (Characters.jsx)
+- [x] Components
+    - [x] DialogueBox
+    - [x] ChoicePanel
+    - [x] RecruitPanel
+    - [x] ActionScene
+    - [x] PathwayChoice
+    - [x] Victory/Finale Scenes
+    - [x] OrderingPanel
+    - [x] MatchingPanel
+    - [x] FillBlankPanel
+    - [x] TrueFalsePanel
+    - [x] CategorySortPanel
+    - [x] TimerPanel
+    - [x] GameOverScreen
+    - [x] ReadyScreen
+    - [x] ShootingGame
+    - [x] AnimationScene
+    - [x] CertificateView
+- [x] Data Layer
+    - [x] Initial storyData.js structure
+    - [x] Implement Act 1 (Ivan gets sick)
+    - [x] Implement Cell-Mediated Path logic (Act 2)
+    - [ ] Implement Humoral Path logic (Act 2)
+- [x] Styling & Polish
+    - [x] Tailwind setup
+    - [x] Character animations/transitions
+    - [x] Responsive layout
 
-## Scene Distribution Summary
+## Current Focus: Refinement & Validation
+- [x] Update Act 1 to include specific "Raw Meat" scene and visual.
+- [x] Implement "Ready for Battle" concept.
+- [x] Implement "Shooting Game" minigame.
+- [x] Implement "Certificate" generation.
+- [x] Add Scientific/Live Diagram animations.
+- [x] Dynamic Kawaii Character in QuestionLayout (shows speaker).
+- [x] Remove Shooting Game "Target" Highlight.
+- [ ] Test entire Cell-Mediated flow.
+- [x] Polished Shooting Game (better visuals, crosshair, feedback).
+- [x] Generated and integrated Raw Meat asset.
 
-### Cell-Mediated Path
-| Scene | Type |
-|-------|------|
-| cm_3 | recruit |
-| cm_4 | action |
-| cm_5 | fill_blank |
-| cm_7 | true_false |
-| cm_8 | action |
-| cm_9 | timer |
-| cm_10 | choice |
-| cm_11 | category_sort |
-| cm_13 | ordering |
-| cm_15 | matching |
-| cm_16 | choice |
+---
 
-### Humoral Path
-| Scene | Type |
-|-------|------|
-| hm_3 | fill_blank |
-| hm_4 | true_false |
-| hm_5 | choice |
-| hm_6 | timer |
-| hm_8 | choice |
-| hm_9 | choice |
-| hm_10 | category_sort |
-| hm_11 | choice |
+## Interaction Types
 
-## Files Modified
-- src/components/Characters.jsx
-- src/components/DialogueBox.jsx
-- src/components/ChoicePanel.jsx
-- src/components/RecruitPanel.jsx
-- src/components/OrderingPanel.jsx (NEW)
-- src/components/MatchingPanel.jsx (NEW)
-- src/components/FillBlankPanel.jsx (NEW)
-- src/components/TrueFalsePanel.jsx (NEW)
-- src/components/CategorySortPanel.jsx (NEW)
-- src/components/TimerPanel.jsx (NEW)
-- src/components/index.js
-- src/App.jsx
-- src/data/storyData.js
-- src/index.css
+| Type | Description | Status |
+|------|-------------|--------|
+| choice | Multiple choice question | ✅ |
+| timer | MCQ with countdown | ✅ |
+| fill_blank | Type the answer | ✅ |
+| true_false | True or False | ✅ |
+| category_sort | Drag items to categories | ✅ |
+| ordering | Reorder items | ✅ |
+| matching | Match pairs | ✅ |
+| recruit | Select characters | ✅ |
+| action | QTE timing game | ✅ |
+| finale | Shrinking circle timing | ✅ |
+
+---
+
+## Deployment
+
+- **Domain**: bio-app.mashbyte.com
+- **Host**: GitHub Pages via GitHub Actions
+- **Base**: `/` (custom domain)
+- **CNAME**: In `public/CNAME`
+
+### To deploy:
+```bash
+git add .
+git commit -m "Full-screen layout redesign"
+git push
+```
+
+---
+
+## Tech Stack
+- React + Vite
+- Tailwind CSS
+- Framer Motion
+- react-kawaii (cells, enemies)
+- react-nice-avatar (humans)
+- lucide-react (icons)

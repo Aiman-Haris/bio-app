@@ -1,171 +1,166 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { Check, X, ChevronRight, Sparkles, RefreshCw, Heart } from 'lucide-react';
+import { characterColors, characterNames } from './Characters';
+import QuestionLayout from './QuestionLayout';
 
-export function ChoicePanel({ speaker, text, choices, feedback, onComplete, onWrongAnswer, lives }) {
-    const [selected, setSelected] = useState(null);
-    const [answered, setAnswered] = useState(false);
+export function ChoicePanel({ speaker, question, choices, correctIndex, onCorrect, onWrong, lives, actName, questionNumber, totalQuestions }) {
+    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [showFeedback, setShowFeedback] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
-    const [shakeWrong, setShakeWrong] = useState(false);
 
-    const handleSelect = (choice) => {
-        if (answered) return;
+    const accentColor = characterColors[speaker] || '#00C7BE';
+    const name = characterNames[speaker] || 'Question';
 
-        setSelected(choice.id);
-        setAnswered(true);
-        setIsCorrect(choice.correct);
+    // Normalize choices to handle both string arrays and object arrays
+    const normalizedChoices = choices.map((choice, idx) => {
+        if (typeof choice === 'string') {
+            return { text: choice, correct: idx === correctIndex };
+        }
+        return choice;
+    });
 
-        if (choice.correct) {
-            if (onComplete) {
-                setTimeout(() => onComplete(), 1500);
-            }
-        } else {
-            setShakeWrong(true);
-            setTimeout(() => setShakeWrong(false), 500);
-            if (onWrongAnswer) {
-                onWrongAnswer();
-            }
+    const handleChoice = (index) => {
+        if (showFeedback) return;
+
+        setSelectedIndex(index);
+        const correct = normalizedChoices[index]?.correct === true;
+        setIsCorrect(correct);
+        setShowFeedback(true);
+    };
+
+    const handleContinue = () => {
+        if (isCorrect) {
+            onCorrect && onCorrect();
         }
     };
 
     const handleRetry = () => {
-        setSelected(null);
-        setAnswered(false);
+        setSelectedIndex(null);
+        setShowFeedback(false);
         setIsCorrect(false);
+        onWrong && onWrong();
     };
 
-    // Colors for choice buttons
-    const choiceColors = ['#FF3B30', '#FF9500', '#34C759', '#007AFF'];
-
     return (
-        <div className="w-full max-w-4xl mx-auto px-4">
-            {/* Two column layout: Question left, Choices right */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                {/* Question */}
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="bg-white rounded-2xl border-4 border-black p-6"
-                    style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
-                >
-                    {speaker && (
-                        <span className="inline-block px-3 py-1 text-sm font-bold bg-teal text-white rounded-lg mb-3">
-                            {speaker}
-                        </span>
-                    )}
-                    <p className="text-xl text-gray-800 leading-relaxed">{text}</p>
-                </motion.div>
+        <QuestionLayout
+            actName={actName}
+            questionNumber={questionNumber}
+            totalQuestions={totalQuestions}
+            lives={lives}
+            character={speaker}
+            reaction={!showFeedback ? 'neutral' : isCorrect ? 'happy' : 'sad'}
+        >
+            <div className="w-full h-full flex flex-col justify-start pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                    {/* Left: Question Card */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="bg-white rounded-3xl border-4 border-black p-6 relative"
+                        style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
+                    >
+                        <div
+                            className="absolute -top-4 left-6 px-4 py-1 rounded-full font-bold text-white text-xs border-2 border-black"
+                            style={{ backgroundColor: accentColor, boxShadow: '2px 2px 0 #1C1C1E' }}
+                        >
+                            {name}
+                        </div>
+                        <p className="text-xl leading-relaxed text-black font-medium mt-2">{question}</p>
+                    </motion.div>
 
-                {/* Choices */}
-                <motion.div
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className={`space-y-3 ${shakeWrong ? 'animate-shake' : ''}`}
-                >
-                    {choices.map((choice, index) => {
-                        const isSelected = selected === choice.id;
-                        const showResult = answered;
-                        const baseColor = choiceColors[index % choiceColors.length];
-
-                        let bgColor = 'white';
-                        let borderColor = '#1C1C1E';
-                        let textColor = '#1C1C1E';
-
-                        if (showResult) {
-                            if (isCorrect && choice.correct) {
-                                bgColor = '#34C759';
-                                borderColor = '#34C759';
-                                textColor = 'white';
-                            } else if (isSelected && !choice.correct) {
-                                bgColor = '#FF3B30';
-                                borderColor = '#FF3B30';
-                                textColor = 'white';
-                            }
-                        } else if (isSelected) {
-                            bgColor = '#FFCC00';
-                        }
-
-                        return (
+                    {/* Right: Choices */}
+                    <div className="space-y-3">
+                        {normalizedChoices.map((choice, index) => (
                             <motion.button
-                                key={choice.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
+                                key={choice.id || index}
+                                initial={{ x: 20, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
                                 transition={{ delay: index * 0.1 }}
-                                whileHover={!answered ? { scale: 1.02, x: 5 } : {}}
-                                whileTap={!answered ? { scale: 0.98 } : {}}
-                                onClick={() => handleSelect(choice)}
-                                disabled={answered}
-                                className="w-full flex items-center gap-4 p-5 rounded-xl border-3 text-left transition-all"
-                                style={{
-                                    backgroundColor: bgColor,
-                                    borderColor,
-                                    color: textColor,
-                                    boxShadow: '4px 4px 0 #1C1C1E',
-                                }}
-                            >
-                                <div
-                                    className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg border-2 flex-shrink-0"
-                                    style={{
-                                        backgroundColor: showResult ? 'rgba(255,255,255,0.2)' : baseColor,
-                                        color: showResult ? 'currentColor' : 'white',
-                                        borderColor: showResult ? 'currentColor' : 'transparent'
-                                    }}
-                                >
-                                    {String.fromCharCode(65 + index)}
-                                </div>
-                                <div className="flex-1 font-semibold">{choice.text}</div>
-                                {showResult && isSelected && isCorrect && <Check className="w-6 h-6 flex-shrink-0" />}
-                                {showResult && isSelected && !isCorrect && <X className="w-6 h-6 flex-shrink-0" />}
-                                {!showResult && <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />}
-                            </motion.button>
-                        );
-                    })}
-
-                    {/* Inline feedback */}
-                    <AnimatePresence>
-                        {answered && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0 }}
-                                className={`p-4 rounded-xl border-3 border-black ${isCorrect ? 'bg-green' : 'bg-red'}`}
+                                onClick={() => handleChoice(index)}
+                                disabled={showFeedback}
+                                whileHover={!showFeedback ? { scale: 1.02, x: 4 } : {}}
+                                whileTap={!showFeedback ? { scale: 0.98 } : {}}
+                                className={`
+                                    w-full text-left px-5 py-4 rounded-2xl border-4 border-black font-medium text-base relative
+                                    transition-colors
+                                    ${showFeedback && isCorrect && index === selectedIndex
+                                        ? 'bg-green-500 text-white'
+                                        : showFeedback && index === selectedIndex && !isCorrect
+                                            ? 'bg-red-500 text-white'
+                                            : showFeedback && !isCorrect
+                                                ? 'bg-white opacity-60 text-black'
+                                                : selectedIndex === index
+                                                    ? 'bg-blue-500 text-white'
+                                                    : 'bg-white hover:bg-gray-50 text-black'
+                                    }
+                                `}
                                 style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
                             >
-                                <div className="flex items-center gap-3 text-white">
-                                    {isCorrect ? <Sparkles className="w-6 h-6" /> : <Heart className="w-6 h-6" />}
-                                    <div className="flex-1">
-                                        <p className="font-bold text-lg">
-                                            {isCorrect ? 'Correct!' : `Wrong! ${lives !== undefined ? `${lives} lives left` : ''}`}
-                                        </p>
-                                        {feedback && isCorrect && <p className="text-white/90 text-sm">{feedback}</p>}
-                                    </div>
+                                <span className="font-black mr-3 text-lg opacity-50">{String.fromCharCode(65 + index)}</span>
+                                {choice.text}
+                            </motion.button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Feedback */}
+                <AnimatePresence>
+                    {showFeedback && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-6 text-center"
+                        >
+                            <div
+                                className={`inline-block px-8 py-4 rounded-3xl border-4 border-black ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`}
+                                style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
+                            >
+                                <p className="text-2xl font-black text-white mb-2">
+                                    {isCorrect ? 'Correct!' : 'Wrong!'}
+                                </p>
+                                <div className="flex gap-4 justify-center">
+                                    {!isCorrect && lives > 1 && (
+                                        <button onClick={handleRetry} className="btn-pop bg-white text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Try Again
+                                        </button>
+                                    )}
+                                    {!isCorrect && lives <= 1 && (
+                                        <button onClick={() => onWrong && onWrong()} className="btn-pop bg-white text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Continue
+                                        </button>
+                                    )}
+                                    {isCorrect && (
+                                        <button onClick={handleContinue} className="btn-pop bg-yellow-400 text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Continue
+                                        </button>
+                                    )}
                                 </div>
-                                {!isCorrect && lives > 0 && (
-                                    <button onClick={handleRetry} className="btn-pop bg-white text-black mt-3 w-full">
-                                        <RefreshCw className="w-5 h-5" />
-                                        Try Again
-                                    </button>
-                                )}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </motion.div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
-        </div>
+        </QuestionLayout>
     );
 }
 
 ChoicePanel.propTypes = {
-    speaker: PropTypes.string.isRequired,
-    text: PropTypes.string.isRequired,
-    choices: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        text: PropTypes.string.isRequired,
-        correct: PropTypes.bool,
-    })).isRequired,
-    feedback: PropTypes.string,
-    onComplete: PropTypes.func,
-    onWrongAnswer: PropTypes.func,
+    speaker: PropTypes.string,
+    question: PropTypes.string.isRequired,
+    choices: PropTypes.arrayOf(PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+            id: PropTypes.string,
+            text: PropTypes.string.isRequired,
+            correct: PropTypes.bool,
+        })
+    ])).isRequired,
+    correctIndex: PropTypes.number,
+    onCorrect: PropTypes.func,
+    onWrong: PropTypes.func,
     lives: PropTypes.number,
+    actName: PropTypes.string,
+    questionNumber: PropTypes.number,
+    totalQuestions: PropTypes.number,
 };

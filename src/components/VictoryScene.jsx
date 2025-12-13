@@ -2,8 +2,9 @@ import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { Trophy, RotateCcw, ArrowRight, Star, Sparkles } from 'lucide-react';
 import { Ghost, Planet, IceCream, Cat, Browser } from 'react-kawaii';
+import QuestionLayout from './QuestionLayout';
 
-export function VictoryScene({ title, description, onRestart, onSwitchPath }) {
+export function VictoryScene({ title, description, onRestart, onSwitchPath, lives, actName, questionNumber, totalQuestions }) {
     // Confetti-like floating characters
     const floatingCells = [
         { Component: Ghost, color: '#FF9500', delay: 0 },
@@ -14,115 +15,116 @@ export function VictoryScene({ title, description, onRestart, onSwitchPath }) {
     ];
 
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="min-h-screen flex items-center justify-center p-8 relative overflow-hidden"
+        <QuestionLayout
+            actName={actName}
+            questionNumber={questionNumber || totalQuestions}
+            totalQuestions={totalQuestions}
+            lives={lives}
+            character="macrophage"
+            reaction="happy"
         >
-            {/* Floating celebration cells */}
-            {floatingCells.map((cell, i) => (
-                <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 100, x: (i - 2) * 150 }}
-                    animate={{
-                        opacity: 1,
-                        y: [100, -20, 100],
-                        x: (i - 2) * 150 + Math.sin(i) * 30,
-                        rotate: [0, 360]
-                    }}
-                    transition={{
-                        delay: cell.delay,
-                        duration: 4,
-                        repeat: Infinity,
-                        repeatType: 'reverse',
-                        ease: 'easeInOut'
-                    }}
-                    className="absolute top-1/4"
-                    style={{ left: `${20 + i * 15}%` }}
-                >
-                    <cell.Component size={50} mood="excited" color={cell.color} />
-                </motion.div>
-            ))}
-
-            <div className="text-center max-w-xl relative z-10">
-                {/* Trophy card */}
-                <motion.div
-                    initial={{ scale: 0, rotate: -10 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-                    className="w-40 h-40 rounded-3xl bg-yellow border-4 border-black mx-auto mb-8 flex items-center justify-center"
-                    style={{ boxShadow: '8px 8px 0 #1C1C1E' }}
-                >
+            <div className="w-full h-full flex items-start justify-center pt-4 relative overflow-hidden">
+                {/* Floating celebration cells */}
+                {floatingCells.map((cell, i) => (
                     <motion.div
-                        animate={{ rotate: [0, -10, 10, 0] }}
-                        transition={{ repeat: Infinity, duration: 2 }}
+                        key={i}
+                        initial={{ opacity: 0, y: 50, x: (i - 2) * 100 }}
+                        animate={{
+                            opacity: 0.4,
+                            y: [50, -10, 50],
+                            x: (i - 2) * 100 + Math.sin(i) * 20,
+                            rotate: [0, 360]
+                        }}
+                        transition={{
+                            delay: cell.delay,
+                            duration: 4,
+                            repeat: Infinity,
+                            repeatType: 'reverse',
+                            ease: 'easeInOut'
+                        }}
+                        className="absolute top-20 pointer-events-none"
+                        style={{ left: `${20 + i * 15}%` }}
                     >
-                        <Trophy className="w-20 h-20 text-black" />
+                        <cell.Component size={40} mood="excited" color={cell.color} />
                     </motion.div>
-                </motion.div>
+                ))}
 
-                {/* Stars */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    className="flex justify-center gap-3 mb-6"
-                >
-                    {[0, 1, 2].map((i) => (
+                <div className="text-center w-full max-w-3xl relative z-10 bg-white rounded-3xl border-4 border-black p-6" style={{ boxShadow: '8px 8px 0 #1C1C1E' }}>
+                    {/* Trophy and Stars row */}
+                    <div className="flex items-center justify-center gap-6 mb-4">
                         <motion.div
-                            key={i}
-                            initial={{ scale: 0, rotate: -180 }}
+                            initial={{ scale: 0, rotate: -10 }}
                             animate={{ scale: 1, rotate: 0 }}
-                            transition={{ delay: 0.5 + i * 0.1, type: 'spring' }}
+                            transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+                            className="w-24 h-24 rounded-2xl bg-yellow-400 border-4 border-black flex items-center justify-center"
+                            style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
                         >
-                            <Star
-                                className="w-10 h-10 fill-yellow text-black"
-                                strokeWidth={2}
-                            />
+                            <motion.div
+                                animate={{ rotate: [0, -10, 10, 0] }}
+                                transition={{ repeat: Infinity, duration: 2 }}
+                            >
+                                <Trophy className="w-12 h-12 text-black" />
+                            </motion.div>
                         </motion.div>
-                    ))}
-                </motion.div>
 
-                {/* Title */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                    className="bg-white border-4 border-black rounded-2xl p-6 mb-6"
-                    style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
-                >
-                    <h1 className="text-3xl md:text-4xl font-bold text-black mb-3 flex items-center justify-center gap-3">
-                        <Sparkles className="w-8 h-8 text-yellow" />
-                        {title}
-                        <Sparkles className="w-8 h-8 text-yellow" />
-                    </h1>
-                    <p className="text-lg text-gray-700">{description}</p>
-                </motion.div>
+                        {/* Stars */}
+                        <div className="flex gap-2">
+                            {[0, 1, 2].map((i) => (
+                                <motion.div
+                                    key={i}
+                                    initial={{ scale: 0, rotate: -180 }}
+                                    animate={{ scale: 1, rotate: 0 }}
+                                    transition={{ delay: 0.3 + i * 0.1, type: 'spring' }}
+                                >
+                                    <Star
+                                        className="w-8 h-8 fill-yellow-400 text-black"
+                                        strokeWidth={2}
+                                    />
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
 
-                {/* Actions */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                    className="flex flex-col sm:flex-row justify-center gap-4"
-                >
-                    <button
-                        onClick={onRestart}
-                        className="btn-pop bg-white text-black"
+                    {/* Title */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="mb-4"
                     >
-                        <RotateCcw className="w-5 h-5" />
-                        Play Again
-                    </button>
-                    <button
-                        onClick={onSwitchPath}
-                        className="btn-pop bg-blue text-white"
+                        <h1 className="text-2xl md:text-3xl font-black text-black mb-2 flex items-center justify-center gap-2 uppercase">
+                            <Sparkles className="w-6 h-6 text-yellow-500" />
+                            {title}
+                            <Sparkles className="w-6 h-6 text-yellow-500" />
+                        </h1>
+                        <p className="text-base text-gray-700 font-medium">{description}</p>
+                    </motion.div>
+
+                    {/* Actions */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5 }}
+                        className="flex flex-row justify-center gap-4"
                     >
-                        Try Other Path
-                        <ArrowRight className="w-5 h-5" />
-                    </button>
-                </motion.div>
+                        <button
+                            onClick={onRestart}
+                            className="btn-pop bg-gray-100 text-black text-base px-6 py-2 rounded-xl border-2 border-black flex items-center gap-2"
+                        >
+                            <RotateCcw className="w-4 h-4" />
+                            Play Again
+                        </button>
+                        <button
+                            onClick={onSwitchPath}
+                            className="btn-pop bg-blue-500 text-white text-base px-6 py-2 rounded-xl border-2 border-black flex items-center gap-2"
+                        >
+                            Try Other Path
+                            <ArrowRight className="w-4 h-4" />
+                        </button>
+                    </motion.div>
+                </div>
             </div>
-        </motion.div>
+        </QuestionLayout>
     );
 }
 
@@ -131,4 +133,8 @@ VictoryScene.propTypes = {
     description: PropTypes.string.isRequired,
     onRestart: PropTypes.func,
     onSwitchPath: PropTypes.func,
+    lives: PropTypes.number,
+    actName: PropTypes.string,
+    questionNumber: PropTypes.number,
+    totalQuestions: PropTypes.number,
 };

@@ -1,5 +1,6 @@
 import NiceAvatar, { genConfig } from 'react-nice-avatar';
 import { Ghost, Planet, IceCream, Backpack, Browser, Cat, Mug } from 'react-kawaii';
+import { Shield, Swords, Activity, Zap } from 'lucide-react';
 
 // Human character configurations with different expressions for moods
 // react-nice-avatar supports: mouthStyle (laugh, smile, peace), eyeStyle (circle, oval, smile)
@@ -50,28 +51,31 @@ export const humanConfigs = {
 };
 
 // Cell characters using react-kawaii (they already have mood support)
+// Added Icon property for visual differentiation of the Ghost shapes
+// Cell characters using react-kawaii (they already have mood support)
+// Added Icon property for visual differentiation of the Ghost shapes
 export const cellCharacters = {
-    macrophage: { component: Ghost, color: '#FF9500' },
-    dendritic: { component: Planet, color: '#FF2D55' },
-    helperT: { component: IceCream, color: '#34C759' },
-    cytotoxicT: { component: Cat, color: '#FF3B30' },
-    bCell: { component: Browser, color: '#007AFF' },
-    pathogen: { component: Backpack, color: '#8E8E93' },
-    phagocyte: { component: Ghost, color: '#00C7BE' },
+    macrophage: { component: Ghost, color: '#FF9500', Icon: Activity },
+    dendritic: { component: Ghost, color: '#FF2D55', Icon: Activity },
+    helperT: { component: Ghost, color: '#34C759' }, // Helper T is default/standard
+    cytotoxicT: { component: Ghost, color: '#FF3B30', Icon: Swords },
+    bCell: { component: Ghost, color: '#007AFF', Icon: Shield },
+    pathogen: { component: Planet, color: '#FF3B30', Icon: Zap }, // Changed to Red to blend in better with "active" options or just look vibrant
+    phagocyte: { component: Ghost, color: '#00C7BE', Icon: Activity },
 };
 
 // Character display names
 export const characterNames = {
     ivan: 'Ivan',
     doctor: 'Dr. Chen',
-    macrophage: 'Mac the Macrophage',
-    dendritic: 'Dendra the Dendritic',
-    helperT: 'Andy the Helper T',
-    cytotoxicT: 'Cyto the Killer T',
-    bCell: 'Bella the B Cell',
+    macrophage: 'Macrophage',
+    dendritic: 'Dendritic Cell',
+    helperT: 'Helper T Cell',
+    cytotoxicT: 'Cytotoxic T Cell',
+    bCell: 'B Cell',
     narrator: 'Narrator',
-    pathogen: 'Virus',
-    phagocyte: 'Phago the Phagocyte',
+    pathogen: 'Bacteria',
+    phagocyte: 'Phagocyte',
 };
 
 // Character colors for UI accents
@@ -84,7 +88,7 @@ export const characterColors = {
     cytotoxicT: '#FF3B30',
     bCell: '#007AFF',
     narrator: '#FFCC00',
-    pathogen: '#8E8E93',
+    pathogen: '#FF3B30', // Match the new color
     phagocyte: '#00C7BE',
 };
 
@@ -165,10 +169,19 @@ export function CellAvatar({ type, size = 80, mood = 'happy' }) {
 
     const CellComponent = cellData.component;
     const kawaiiMood = kawaiiMoodMap[mood] || 'happy';
+    const Icon = cellData.Icon;
 
     return (
-        <div className="flex items-center justify-center" style={{ width: size, height: size }}>
+        <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
             <CellComponent size={size * 0.9} mood={kawaiiMood} color={cellData.color} />
+            {Icon && (
+                <div
+                    className="absolute bottom-0 right-0 bg-white border-2 border-black rounded-full p-1 shadow-md"
+                    style={{ transform: 'scale(0.8)' }}
+                >
+                    <Icon size={16} color={cellData.color} strokeWidth={3} />
+                </div>
+            )}
         </div>
     );
 }

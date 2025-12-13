@@ -1,6 +1,5 @@
 import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, RotateCcw } from 'lucide-react';
 import { storyData } from './data/storyData';
 import {
   DialogueBox,
@@ -17,79 +16,12 @@ import {
   TrueFalsePanel,
   CategorySortPanel,
   TimerPanel,
+  GameOverScreen,
+  ReadyScreen,
+  ShootingGame,
+  AnimationScene,
+  CertificateView,
 } from './components';
-
-// Game Over Screen Component
-function GameOverScreen({ onRestart }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-screen flex items-center justify-center p-8 bg-red"
-    >
-      <div className="text-center">
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: 'spring', delay: 0.2 }}
-          className="text-8xl mb-6"
-        >
-          <span className="text-8xl font-bold">X</span>
-        </motion.div>
-
-        <motion.h1
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="text-4xl md:text-5xl font-bold text-white mb-4"
-        >
-          Game Over!
-        </motion.h1>
-
-        <motion.p
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-xl text-white/90 mb-8"
-        >
-          The pathogens have overwhelmed Ivan's immune system. Try again!
-        </motion.p>
-
-        <motion.button
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          onClick={onRestart}
-          className="btn-pop bg-white text-black text-xl px-8 py-4"
-        >
-          <RotateCcw className="w-6 h-6" />
-          Try Again
-        </motion.button>
-      </div>
-    </motion.div>
-  );
-}
-
-// Lives Display Component
-function LivesDisplay({ lives, maxLives = 3 }) {
-  return (
-    <div className="flex items-center gap-2">
-      {[...Array(maxLives)].map((_, i) => (
-        <motion.div
-          key={i}
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: i * 0.1 }}
-        >
-          <Heart
-            className={`w-8 h-8 ${i < lives ? 'fill-red text-red' : 'text-white/30'}`}
-            strokeWidth={2}
-          />
-        </motion.div>
-      ))}
-    </div>
-  );
-}
 
 function App() {
   const [currentAct, setCurrentAct] = useState('act1'); // act1, pathway, victory, gameover
@@ -169,11 +101,58 @@ function App() {
     setLives(MAX_LIVES); // Reset lives for new path
   };
 
+  // Calculate progress
+  const getProgress = () => {
+    let scenes = [];
+    if (currentAct === 'act1') scenes = storyData.act1;
+    else if (currentAct === 'pathway') {
+      scenes = selectedPath === 'cell_mediated'
+        ? storyData.cellMediatedPath
+        : storyData.humoralPath;
+    }
+
+    if (!scenes.length) return { current: 0, total: 0 };
+
+    const questionTypes = ['choice', 'recruit', 'action', 'ordering', 'matching', 'fill_blank', 'true_false', 'category_sort', 'timer', 'finale', 'shooting_game'];
+    const questions = scenes.filter(s => {
+      if (!questionTypes.includes(s.type)) return false;
+      if (s.choices && s.choices[0]?.id === 'cell_mediated') return false;
+      return true;
+    });
+
+    const total = questions.length;
+    const currentIndex = questions.findIndex(s => s.id === currentSceneId);
+    const current = currentIndex !== -1 ? currentIndex + 1 : 0;
+
+    return { current, total };
+  };
+
+  // Calculate act title
+  const getActTitle = () => {
+    if (currentAct === 'act1') return "Act 1: The Invasion";
+    if (currentAct === 'pathway') {
+      return selectedPath === 'cell_mediated' ? "Act 2: Cell-Mediated Defense" : "Act 2: Humoral Defense";
+    }
+    if (currentAct === 'victory') return "Victory";
+    if (currentAct === 'gameover') return "Game Over";
+    return "Immune Adventure";
+  };
+
+  const actTitle = getActTitle();
+  const progress = getProgress();
+
+  const commonProps = {
+    lives,
+    actName: actTitle,
+    questionNumber: progress.current,
+    totalQuestions: progress.total,
+  };
+
   // Render current scene
   const renderScene = () => {
     // Game Over screen
     if (currentAct === 'gameover') {
-      return <GameOverScreen onRestart={handleRestart} />;
+      return <GameOverScreen onRestart={handleRestart} {...commonProps} />;
     }
 
     // Victory screen
@@ -187,6 +166,7 @@ function App() {
           description={victoryData.description}
           onRestart={handleRestart}
           onSwitchPath={handleSwitchPath}
+          {...commonProps}
         />
       );
     }
@@ -200,164 +180,193 @@ function App() {
             <DialogueBox
               speaker={currentScene.speaker}
               text={currentScene.text}
+              image={currentScene.image}
               onContinue={() => handleNext(currentScene.next, currentScene.speaker)}
               isSameSpeaker={previousSpeaker === currentScene.speaker}
             />
           </div>
         );
 
+      case 'ready_screen':
+        return (
+          <ReadyScreen
+            text={currentScene.text}
+            onContinue={() => handleNext(currentScene.next)}
+          />
+        );
+
+      case 'shooting_game':
+        return (
+          <ShootingGame
+            instruction={currentScene.instruction}
+            onComplete={() => handleNext(currentScene.next)}
+            onFail={handleWrongAnswer}
+            {...commonProps}
+          />
+        );
+
+      case 'animation':
+        return (
+          <AnimationScene
+            animationName={currentScene.animationName}
+            text={currentScene.text}
+            onNext={() => handleNext(currentScene.next)}
+          />
+        );
+
+      case 'certificate':
+        return (
+          <CertificateView
+            title={currentScene.title}
+            description={currentScene.description}
+            onRestart={handleRestart}
+          />
+        );
+
       case 'choice':
         // Check if this is the pathway choice scene
         if (currentScene.choices[0]?.id === 'cell_mediated') {
           return (
-            <div className="min-h-screen flex items-center justify-center p-8">
-              <PathwayChoice
-                text={currentScene.text}
-                options={currentScene.choices}
-                onSelect={handlePathSelect}
-              />
-            </div>
+            <PathwayChoice
+              text={currentScene.text}
+              options={currentScene.choices}
+              onSelect={handlePathSelect}
+              {...commonProps}
+            />
           );
         }
         return (
-          <div className="min-h-screen flex items-center justify-center p-8">
-            <ChoicePanel
-              speaker={currentScene.speaker}
-              text={currentScene.text}
-              choices={currentScene.choices}
-              feedback={currentScene.feedback}
-              onComplete={() => handleNext(currentScene.next)}
-              onWrongAnswer={handleWrongAnswer}
-              lives={lives}
-            />
-          </div>
+          <ChoicePanel
+            key={currentScene.id}
+            speaker={currentScene.speaker}
+            question={currentScene.text}
+            choices={currentScene.choices}
+            onCorrect={() => handleNext(currentScene.next)}
+            onWrong={handleWrongAnswer}
+            {...commonProps}
+          />
         );
 
       case 'recruit':
         return (
-          <div className="min-h-screen flex items-center justify-center p-8">
-            <RecruitPanel
-              speaker={currentScene.speaker}
-              text={currentScene.text}
-              options={currentScene.options}
-              correctCount={currentScene.correctCount}
-              successText={currentScene.successText}
-              onComplete={() => handleNext(currentScene.next)}
-              onWrongAnswer={handleWrongAnswer}
-              lives={lives}
-            />
-          </div>
+          <RecruitPanel
+            key={currentScene.id}
+            speaker={currentScene.speaker}
+            text={currentScene.text}
+            options={currentScene.options}
+            correctCount={currentScene.correctCount}
+            successText={currentScene.successText}
+            onComplete={() => handleNext(currentScene.next)}
+            onWrongAnswer={handleWrongAnswer}
+            {...commonProps}
+          />
         );
 
       case 'action':
         return (
-          <div className="min-h-screen flex items-center justify-center p-8">
-            <ActionScene
-              speaker={currentScene.speaker}
-              text={currentScene.text}
-              action={currentScene.action}
-              onComplete={() => handleNext(currentScene.next)}
-            />
-          </div>
+          <ActionScene
+            speaker={currentScene.speaker}
+            text={currentScene.text}
+            action={currentScene.action}
+            onComplete={() => handleNext(currentScene.next)}
+            {...commonProps}
+          />
         );
 
       case 'finale':
-        return (
-          <div className="min-h-screen flex items-center justify-center p-8">
-            {currentScene.finaleType === 'attack' ? (
-              <AttackFinale onComplete={handleFinaleComplete} />
-            ) : (
-              <AntibodyFinale onComplete={handleFinaleComplete} />
-            )}
-          </div>
+        return currentScene.finaleType === 'attack' ? (
+          <AttackFinale
+            onComplete={handleFinaleComplete}
+            {...commonProps}
+          />
+        ) : (
+          <AntibodyFinale
+            onComplete={handleFinaleComplete}
+            {...commonProps}
+          />
         );
 
       case 'ordering':
         return (
-          <div className="min-h-screen flex items-center justify-center p-8">
-            <OrderingPanel
-              speaker={currentScene.speaker}
-              text={currentScene.text}
-              items={currentScene.items}
-              onComplete={() => handleNext(currentScene.next)}
-              onWrongAnswer={handleWrongAnswer}
-              lives={lives}
-            />
-          </div>
+          <OrderingPanel
+            key={currentScene.id}
+            speaker={currentScene.speaker}
+            instruction={currentScene.text}
+            items={currentScene.items}
+            correctOrder={currentScene.correctOrder}
+            onCorrect={() => handleNext(currentScene.next)}
+            onWrong={handleWrongAnswer}
+            {...commonProps}
+          />
         );
 
       case 'matching':
         return (
-          <div className="min-h-screen flex items-center justify-center p-8">
-            <MatchingPanel
-              speaker={currentScene.speaker}
-              text={currentScene.text}
-              pairs={currentScene.pairs}
-              onComplete={() => handleNext(currentScene.next)}
-              onWrongAnswer={handleWrongAnswer}
-              lives={lives}
-            />
-          </div>
+          <MatchingPanel
+            key={currentScene.id}
+            speaker={currentScene.speaker}
+            instruction={currentScene.text}
+            pairs={currentScene.pairs}
+            onCorrect={() => handleNext(currentScene.next)}
+            onWrong={handleWrongAnswer}
+            {...commonProps}
+          />
         );
 
       case 'fill_blank':
         return (
-          <div className="min-h-screen flex items-center justify-center p-8">
-            <FillBlankPanel
-              speaker={currentScene.speaker}
-              text={currentScene.text}
-              answer={currentScene.answer}
-              hint={currentScene.hint}
-              onComplete={() => handleNext(currentScene.next)}
-              onWrongAnswer={handleWrongAnswer}
-              lives={lives}
-            />
-          </div>
+          <FillBlankPanel
+            key={currentScene.id}
+            speaker={currentScene.speaker}
+            question={currentScene.text}
+            correctAnswer={currentScene.answer}
+            hint={currentScene.hint}
+            onCorrect={() => handleNext(currentScene.next)}
+            onWrong={handleWrongAnswer}
+            {...commonProps}
+          />
         );
 
       case 'true_false':
         return (
-          <div className="min-h-screen flex items-center justify-center p-8">
-            <TrueFalsePanel
-              speaker={currentScene.speaker}
-              statement={currentScene.statement}
-              isTrue={currentScene.isTrue}
-              explanation={currentScene.explanation}
-              onComplete={() => handleNext(currentScene.next)}
-              onWrongAnswer={handleWrongAnswer}
-              lives={lives}
-            />
-          </div>
+          <TrueFalsePanel
+            key={currentScene.id}
+            speaker={currentScene.speaker}
+            statement={currentScene.statement}
+            isTrue={currentScene.isTrue}
+            explanation={currentScene.explanation}
+            onCorrect={() => handleNext(currentScene.next)}
+            onWrong={handleWrongAnswer}
+            {...commonProps}
+          />
         );
 
       case 'category_sort':
         return (
-          <div className="min-h-screen flex items-center justify-center p-8">
-            <CategorySortPanel
-              speaker={currentScene.speaker}
-              text={currentScene.text}
-              categories={currentScene.categories}
-              items={currentScene.items}
-              onComplete={() => handleNext(currentScene.next)}
-              onWrongAnswer={handleWrongAnswer}
-              lives={lives}
-            />
-          </div>
+          <CategorySortPanel
+            key={currentScene.id}
+            speaker={currentScene.speaker}
+            instruction={currentScene.text}
+            categories={currentScene.categories}
+            items={currentScene.items}
+            onCorrect={() => handleNext(currentScene.next)}
+            onWrong={handleWrongAnswer}
+            {...commonProps}
+          />
         );
 
       case 'timer':
         return (
-          <div className="min-h-screen flex items-center justify-center p-8">
-            <TimerPanel
-              speaker={currentScene.speaker}
-              text={currentScene.text}
-              choices={currentScene.choices}
-              timeLimit={currentScene.timeLimit || 10}
-              onComplete={() => handleNext(currentScene.next)}
-              onWrongAnswer={handleWrongAnswer}
-              lives={lives}
-            />
-          </div>
+          <TimerPanel
+            key={currentScene.id}
+            speaker={currentScene.speaker}
+            question={currentScene.text}
+            choices={currentScene.choices}
+            timeLimit={currentScene.timeLimit || 10}
+            onCorrect={() => handleNext(currentScene.next)}
+            onWrong={handleWrongAnswer}
+            {...commonProps}
+          />
         );
 
       default:
@@ -365,41 +374,17 @@ function App() {
     }
   };
 
-  // Calculate progress
-  const getProgress = () => {
-    if (currentAct === 'act1') {
-      const index = storyData.act1.findIndex(s => s.id === currentSceneId);
-      return { current: index + 1, total: storyData.act1.length };
-    } else if (currentAct === 'pathway') {
-      const pathData = selectedPath === 'cell_mediated'
-        ? storyData.cellMediatedPath
-        : storyData.humoralPath;
-      const index = pathData.findIndex(s => s.id === currentSceneId);
-      return { current: index + 1, total: pathData.length };
-    }
-    return { current: 0, total: 0 };
-  };
-
-  const progress = getProgress();
-
   return (
     <div className={`min-h-screen transition-all duration-500 ${backgroundClass}`}>
-      {/* HUD - Progress bar and Lives */}
-      {/* HUD - Just Lives in corner */}
-      {currentAct !== 'victory' && currentAct !== 'gameover' && (
-        <div className="fixed top-4 right-4 z-50">
-          <LivesDisplay lives={lives} maxLives={MAX_LIVES} />
-        </div>
-      )}
-
-      {/* Scene content */}
+      {/* Scene content - only animate on act changes, not dialogue changes */}
       <AnimatePresence mode="wait">
         <motion.div
-          key={`${currentAct}-${currentSceneId}`}
+          key={currentAct}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
+          className="w-full h-full"
         >
           {renderScene()}
         </motion.div>

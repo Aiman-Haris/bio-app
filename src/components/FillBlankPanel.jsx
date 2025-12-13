@@ -1,130 +1,138 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { Check, AlertCircle, RefreshCw } from 'lucide-react';
+import { characterColors, characterNames } from './Characters';
+import QuestionLayout from './QuestionLayout';
 
-// Fill in the blank - type the missing word
-export function FillBlankPanel({ speaker, text, blank, answer, hint, onComplete, onWrongAnswer, lives }) {
-    const [input, setInput] = useState('');
-    const [submitted, setSubmitted] = useState(false);
+export function FillBlankPanel({ speaker, question, correctAnswer, onCorrect, onWrong, lives, actName, questionNumber, totalQuestions }) {
+    const [answer, setAnswer] = useState('');
+    const [showFeedback, setShowFeedback] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
-    const [shakeWrong, setShakeWrong] = useState(false);
+
+    const accentColor = characterColors[speaker] || '#00C7BE';
+    const name = characterNames[speaker] || 'Fill in the blank';
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!input.trim()) return;
+        if (showFeedback || !answer.trim()) return;
 
-        // Check if answer matches (case insensitive)
-        const correct = input.trim().toLowerCase() === answer.toLowerCase();
-
+        const correct = answer.trim().toLowerCase() === correctAnswer.toLowerCase();
         setIsCorrect(correct);
-        setSubmitted(true);
+        setShowFeedback(true);
+    };
 
-        if (correct) {
-            setTimeout(() => onComplete && onComplete(), 1500);
-        } else {
-            setShakeWrong(true);
-            setTimeout(() => setShakeWrong(false), 500);
-            if (onWrongAnswer) onWrongAnswer();
+    const handleContinue = () => {
+        if (isCorrect) {
+            onCorrect && onCorrect();
         }
     };
 
     const handleRetry = () => {
-        setSubmitted(false);
+        setAnswer('');
+        setShowFeedback(false);
         setIsCorrect(false);
-        setInput('');
+        onWrong && onWrong();
     };
 
-    // Split text by blank marker
-    const parts = text.split('_____');
-
     return (
-        <div className="max-w-2xl mx-auto">
-            {/* Question with blank */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl border-4 border-black p-6 mb-6"
-                style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
-            >
-                <p className="text-lg text-gray-800 leading-relaxed">
-                    {parts[0]}
-                    <span className="inline-block mx-2 px-4 py-1 bg-yellow rounded-lg border-2 border-black font-bold min-w-[120px] text-center">
-                        {submitted ? (isCorrect ? answer : input) : (input || '?')}
-                    </span>
-                    {parts[1]}
-                </p>
-                {hint && !submitted && (
-                    <p className="text-sm text-gray-500 mt-3">Hint: {hint}</p>
-                )}
-            </motion.div>
-
-            {/* Input form */}
-            {!submitted && (
-                <motion.form
-                    onSubmit={handleSubmit}
-                    animate={shakeWrong ? { x: [-10, 10, -10, 10, 0] } : {}}
-                    transition={{ duration: 0.4 }}
-                    className="space-y-4"
-                >
-                    <input
-                        type="text"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        placeholder="Type your answer..."
-                        className="w-full p-4 text-lg rounded-xl border-3 border-black bg-white focus:ring-4 focus:ring-yellow/50 outline-none"
-                        style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
-                        autoFocus
-                    />
-                    <button
-                        type="submit"
-                        disabled={!input.trim()}
-                        className="btn-pop bg-green text-white w-full disabled:opacity-50"
+        <QuestionLayout
+            actName={actName}
+            questionNumber={questionNumber}
+            totalQuestions={totalQuestions}
+            lives={lives}
+            character={speaker}
+            reaction={!showFeedback ? 'neutral' : isCorrect ? 'happy' : 'sad'}
+        >
+            <div className="w-full h-full flex flex-col justify-start pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                    {/* Left: Question Card */}
+                    <div
+                        className="bg-white rounded-3xl border-4 border-black p-6 relative"
+                        style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
                     >
-                        <Check className="w-5 h-5" />
-                        Check Answer
-                    </button>
-                </motion.form>
-            )}
-
-            {/* Feedback */}
-            {submitted && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`p-5 rounded-2xl border-3 border-black ${isCorrect ? 'bg-green' : 'bg-red'}`}
-                    style={{ boxShadow: '5px 5px 0 #1C1C1E' }}
-                >
-                    <div className="flex items-center gap-4 text-white">
-                        {isCorrect ? <Check className="w-8 h-8" /> : <AlertCircle className="w-8 h-8" />}
-                        <div>
-                            <p className="font-bold text-xl">
-                                {isCorrect ? 'Correct!' : `Wrong! The answer was "${answer}"`}
-                            </p>
-                            {!isCorrect && lives !== undefined && (
-                                <p className="text-white/80">{lives} lives left</p>
-                            )}
+                        <div
+                            className="absolute -top-4 left-6 px-4 py-1 rounded-full font-bold text-white text-xs border-2 border-black"
+                            style={{ backgroundColor: accentColor, boxShadow: '2px 2px 0 #1C1C1E' }}
+                        >
+                            {name}
                         </div>
+                        <p className="text-xl leading-relaxed text-black font-medium mt-2">{question}</p>
                     </div>
-                    {!isCorrect && lives > 0 && (
-                        <button onClick={handleRetry} className="btn-pop bg-white text-black mt-4 w-full">
-                            <RefreshCw className="w-5 h-5" />
-                            Try Again
-                        </button>
+
+                    {/* Right: Input */}
+                    <div className="flex flex-col justify-center bg-teal-100 p-6 rounded-3xl border-4 border-black" style={{ boxShadow: '6px 6px 0 #1C1C1E' }}>
+                        <form onSubmit={handleSubmit}>
+                            <label className="block text-black font-black text-xl mb-4 text-center">Your Answer</label>
+                            <input
+                                type="text"
+                                value={answer}
+                                onChange={(e) => setAnswer(e.target.value)}
+                                placeholder="Type here..."
+                                disabled={showFeedback}
+                                className="w-full px-6 py-4 text-xl text-center font-bold border-4 border-black rounded-2xl mb-4 focus:outline-none focus:ring-4 focus:ring-teal-400 shadow-[4px_4px_0_#1C1C1E] text-black bg-white"
+                                autoFocus
+                            />
+                            <button
+                                type="submit"
+                                disabled={showFeedback || !answer.trim()}
+                                className="btn-pop bg-teal-500 text-white w-full text-lg py-3 font-bold disabled:opacity-50 disabled:cursor-not-allowed rounded-xl border-4 border-black"
+                                style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
+                            >
+                                Submit Answer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                {/* Feedback */}
+                <AnimatePresence>
+                    {showFeedback && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-6 text-center"
+                        >
+                            <div
+                                className={`inline-block px-8 py-4 rounded-3xl border-4 border-black ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`}
+                                style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
+                            >
+                                <p className="text-2xl font-black text-white mb-2">
+                                    {isCorrect ? 'Correct!' : 'Wrong!'}
+                                </p>
+                                <div className="flex gap-4 justify-center">
+                                    {!isCorrect && lives > 1 && (
+                                        <button onClick={handleRetry} className="btn-pop bg-white text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Try Again
+                                        </button>
+                                    )}
+                                    {!isCorrect && lives <= 1 && (
+                                        <button onClick={() => onWrong && onWrong()} className="btn-pop bg-white text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Continue
+                                        </button>
+                                    )}
+                                    {isCorrect && (
+                                        <button onClick={handleContinue} className="btn-pop bg-yellow-400 text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Continue
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
                     )}
-                </motion.div>
-            )}
-        </div>
+                </AnimatePresence>
+            </div>
+        </QuestionLayout>
     );
 }
 
 FillBlankPanel.propTypes = {
     speaker: PropTypes.string,
-    text: PropTypes.string.isRequired,
-    blank: PropTypes.string,
-    answer: PropTypes.string.isRequired,
-    hint: PropTypes.string,
-    onComplete: PropTypes.func,
-    onWrongAnswer: PropTypes.func,
+    question: PropTypes.string.isRequired,
+    correctAnswer: PropTypes.string.isRequired,
+    onCorrect: PropTypes.func,
+    onWrong: PropTypes.func,
     lives: PropTypes.number,
+    actName: PropTypes.string,
+    questionNumber: PropTypes.number,
+    totalQuestions: PropTypes.number,
 };

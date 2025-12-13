@@ -1,91 +1,170 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
+import NiceAvatar from 'react-nice-avatar';
 import {
     characterNames,
     characterColors,
     isHumanCharacter,
     isNarrator,
     detectMoodFromText,
-    HumanAvatar,
+    humanConfigs,
     CellAvatar
 } from './Characters';
 import { ChevronRight } from 'lucide-react';
 
-// Cinematic narration overlay component (no avatar, floating text)
-function NarrationOverlay({ text, onContinue }) {
+// Big full-height portrait for humans
+function HumanPortrait({ type, mood = 'happy', isActive = false }) {
+    const configs = humanConfigs[type];
+    if (!configs) return null;
+
+    const config = configs[mood] || configs.happy;
+
     return (
         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="w-full max-w-4xl mx-auto text-center"
+            animate={{ opacity: isActive ? 1 : 0.4 }}
+            transition={{ duration: 0.3 }}
+            className="h-full flex items-end justify-center"
+            style={{
+                width: 280,
+                backgroundColor: config.bgColor || '#f0f0f0',
+            }}
         >
-            {/* Cinematic narration text */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="relative px-8 py-6"
-            >
-                {/* Decorative lines */}
-                <div className="flex items-center justify-center gap-4 mb-4">
-                    <div className="h-0.5 w-16 bg-white/40" />
-                    <span className="text-white/60 text-sm uppercase tracking-widest">narrator</span>
-                    <div className="h-0.5 w-16 bg-white/40" />
-                </div>
-
-                {/* Narration text - italic, elegant */}
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                    className="text-2xl text-white font-light italic leading-relaxed"
-                    style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}
-                >
-                    "{text}"
-                </motion.p>
-
-                {/* Continue button */}
-                <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 }}
-                    className="mt-8"
-                >
-                    <button
-                        onClick={onContinue}
-                        className="btn-pop bg-yellow text-black flex items-center gap-2 mx-auto"
-                    >
-                        Continue
-                        <ChevronRight className="w-5 h-5" />
-                    </button>
-                </motion.div>
-            </motion.div>
+            <NiceAvatar
+                style={{ width: 350, height: 350 }}
+                shape="square"
+                {...config}
+            />
         </motion.div>
     );
 }
 
-// Character with speech bubble
-function CharacterDialogue({ speaker, text, onContinue, isSameSpeaker, mood }) {
+// Human dialogue with BIG side portraits - also used for narration
+function HumanDialogue({ speaker, text, onContinue, mood, isNarration = false, image }) {
+    const name = isNarration ? 'Narrator' : characterNames[speaker];
+    const accentColor = isNarration ? '#FFCC00' : characterColors[speaker];
+
+    // Determine which avatar is active (for narration, neither is fully active)
+    const ivanActive = speaker === 'ivan';
+    const doctorActive = speaker === 'doctor';
+
+    return (
+        <div className="fixed inset-0 flex">
+            {/* Ivan on left - full height */}
+            <div className="h-full border-r-4 border-black overflow-hidden relative">
+                <HumanPortrait
+                    type="ivan"
+                    mood={ivanActive ? mood : 'happy'}
+                    isActive={ivanActive}
+                />
+            </div>
+
+            {/* Dialogue/Narration in center */}
+            <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-b from-teal to-green">
+                <div className="w-full max-w-xl flex flex-col items-center">
+
+                    {/* Optional Image Display */}
+                    {image && (
+                        <motion.div
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            className="mb-4 rounded-xl border-4 border-black overflow-hidden shadow-card w-64 h-48 bg-white"
+                        >
+                            {image === 'raw_meat_zoom' ? (
+                                <img
+                                    src="/raw_meat_zoom.png"
+                                    alt="Raw Meat Zoom"
+                                    className="w-full h-full object-cover"
+                                />
+                            ) : (
+                                <div className="w-full h-full bg-gray-200 flex items-center justify-center text-4xl">
+                                    {image}
+                                </div>
+                            )}
+                        </motion.div>
+                    )}
+
+                    {/* Text box - only the text animates, not the whole container */}
+                    <div
+                        className="relative bg-white rounded-2xl border-4 border-black p-8 w-full"
+                        style={{ boxShadow: '8px 8px 0 #1C1C1E' }}
+                    >
+                        {/* Name tag */}
+                        <motion.div
+                            key={name}
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="absolute -top-6 left-6 px-6 py-2 rounded-full font-bold text-lg border-4 border-black"
+                            style={{
+                                backgroundColor: accentColor,
+                                color: isNarration ? '#1C1C1E' : 'white',
+                                boxShadow: '4px 4px 0 #1C1C1E'
+                            }}
+                        >
+                            {name}
+                        </motion.div>
+
+                        {/* Dialogue text - smooth transition */}
+                        <AnimatePresence mode="wait">
+                            <motion.p
+                                key={text}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className={`text-xl leading-relaxed text-gray-800 mt-4 ${isNarration ? 'italic text-center' : ''}`}
+                            >
+                                {isNarration ? `"${text}"` : text}
+                            </motion.p>
+                        </AnimatePresence>
+
+                        {/* Continue button */}
+                        <div className="flex justify-end mt-6">
+                            <button
+                                onClick={onContinue}
+                                className="btn-pop bg-yellow text-black flex items-center gap-2"
+                            >
+                                Continue
+                                <ChevronRight className="w-5 h-5" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Doctor on right - full height */}
+            <div className="h-full border-l-4 border-black overflow-hidden">
+                <HumanPortrait
+                    type="doctor"
+                    mood={doctorActive ? mood : 'happy'}
+                    isActive={doctorActive}
+                />
+            </div>
+        </div>
+    );
+}
+
+// Cell dialogue (immune cells, centered)
+function CellDialogue({ speaker, text, onContinue, mood, image }) {
     const name = characterNames[speaker] || 'Unknown';
     const accentColor = characterColors[speaker] || '#007AFF';
-    const isHuman = isHumanCharacter(speaker);
 
     return (
         <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
-            {/* Speech bubble / Dialogue box */}
-            <motion.div
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                key={text}
-                className="relative mb-4 w-full max-w-2xl"
-            >
-                {/* Main dialogue box */}
+
+            {/* Optional Image */}
+            {image && (
+                <div className="mb-6 rounded-xl border-4 border-black overflow-hidden shadow-card bg-white p-2">
+                    <div className="w-64 h-48 bg-gray-200 flex items-center justify-center text-4xl">
+                        {image}
+                    </div>
+                </div>
+            )}
+
+            <div className="relative mb-4 w-full max-w-2xl">
                 <div
                     className="relative bg-white rounded-2xl border-4 border-black p-6"
                     style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
                 >
-                    {/* Name tag */}
                     <div
                         className="absolute -top-4 left-6 px-4 py-1 rounded-full font-bold text-white border-3 border-black"
                         style={{
@@ -96,23 +175,21 @@ function CharacterDialogue({ speaker, text, onContinue, isSameSpeaker, mood }) {
                         {name}
                     </div>
 
-                    {/* Dialogue text */}
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.1 }}
-                        className="text-lg leading-relaxed text-gray-800 mt-2"
-                    >
-                        {text}
-                    </motion.p>
+                    {/* Smooth text transition */}
+                    <AnimatePresence mode="wait">
+                        <motion.p
+                            key={text}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="text-lg leading-relaxed text-gray-800 mt-2"
+                        >
+                            {text}
+                        </motion.p>
+                    </AnimatePresence>
 
-                    {/* Continue button */}
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.3 }}
-                        className="flex justify-end mt-4"
-                    >
+                    <div className="flex justify-end mt-4">
                         <button
                             onClick={onContinue}
                             className="btn-pop bg-yellow text-black flex items-center gap-2"
@@ -120,10 +197,9 @@ function CharacterDialogue({ speaker, text, onContinue, isSameSpeaker, mood }) {
                             Continue
                             <ChevronRight className="w-5 h-5" />
                         </button>
-                    </motion.div>
+                    </div>
                 </div>
 
-                {/* Speech bubble pointer */}
                 <div
                     className="absolute -bottom-4 left-1/2 transform -translate-x-1/2"
                     style={{
@@ -142,41 +218,56 @@ function CharacterDialogue({ speaker, text, onContinue, isSameSpeaker, mood }) {
                         borderTop: '16px solid white',
                     }}
                 />
-            </motion.div>
+            </div>
 
-            {/* Character avatar with expression */}
             <motion.div
-                initial={isSameSpeaker ? false : { opacity: 0, y: 50, scale: 0.8 }}
+                initial={{ opacity: 0, y: 50, scale: 0.8 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ type: 'spring', damping: 15 }}
             >
-                {isHuman ? (
-                    <HumanAvatar type={speaker} size={180} mood={mood} />
-                ) : (
-                    <CellAvatar type={speaker} size={160} mood={mood} />
-                )}
+                <CellAvatar type={speaker} size={160} mood={mood} />
             </motion.div>
         </div>
     );
 }
 
-// Main DialogueBox - handles both narration and character dialogue
-export function DialogueBox({ speaker, text, onContinue, showContinue = true, isSameSpeaker = false }) {
+// Main DialogueBox
+export function DialogueBox({ speaker, text, onContinue, showContinue = true, isSameSpeaker = false, image }) {
     const mood = detectMoodFromText(text);
 
-    // Narrator gets cinematic overlay treatment
+    // Narrator uses same layout as humans but with both dimmed
     if (isNarrator(speaker)) {
-        return <NarrationOverlay text={text} onContinue={onContinue} />;
+        return (
+            <HumanDialogue
+                speaker="narrator"
+                text={text}
+                onContinue={onContinue}
+                mood="happy"
+                isNarration={true}
+                image={image}
+            />
+        );
     }
 
-    // Regular character dialogue with avatar
+    if (isHumanCharacter(speaker)) {
+        return (
+            <HumanDialogue
+                speaker={speaker}
+                text={text}
+                onContinue={onContinue}
+                mood={mood}
+                image={image}
+            />
+        );
+    }
+
     return (
-        <CharacterDialogue
+        <CellDialogue
             speaker={speaker}
             text={text}
             onContinue={onContinue}
-            isSameSpeaker={isSameSpeaker}
             mood={mood}
+            image={image}
         />
     );
 }
@@ -187,4 +278,5 @@ DialogueBox.propTypes = {
     onContinue: PropTypes.func,
     showContinue: PropTypes.bool,
     isSameSpeaker: PropTypes.bool,
+    image: PropTypes.string,
 };

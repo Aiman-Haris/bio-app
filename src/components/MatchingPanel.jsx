@@ -1,199 +1,233 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useMemo } from 'react';
+import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { Check, AlertCircle, RefreshCw, ArrowRight } from 'lucide-react';
+import { GripVertical } from 'lucide-react';
+import { characterColors } from './Characters';
+import QuestionLayout from './QuestionLayout';
 
-// Matching/Snap component - match items on left to items on right
-export function MatchingPanel({ speaker, text, pairs, onComplete, onWrongAnswer, lives }) {
-    const [selected, setSelected] = useState(null); // Currently selected left item
-    const [matches, setMatches] = useState({}); // { leftId: rightId }
-    const [submitted, setSubmitted] = useState(false);
-    const [isCorrect, setIsCorrect] = useState(false);
-    const [shakeWrong, setShakeWrong] = useState(false);
+// Fisher-Yates shuffle
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
 
-    // Shuffle right items
-    const [rightItems] = useState(() => {
-        return [...pairs].sort(() => Math.random() - 0.5);
+export function MatchingPanel({ speaker, instruction, pairs, onCorrect, onWrong, lives, actName, questionNumber, totalQuestions }) {
+    const accentColor = characterColors[speaker] || '#007AFF';
+
+    // Normalize pairs - handle both {left, right} and {leftId, leftText, rightId, rightText} formats
+    const normalizedPairs = useMemo(() => {
+        return pairs.map((p, idx) => ({
+            leftId: p.leftId || `left-${idx}`,
+            leftText: p.leftText || p.left || '',
+            rightId: p.rightId || `right-${idx}`,
+            rightText: p.rightText || p.right || '',
+        }));
+    }, [pairs]);
+
+    // Left items (terms) - STATIC, in original order
+    const leftItems = useMemo(() => {
+        return normalizedPairs.map(p => ({ id: p.leftId, text: p.leftText, matchId: p.rightId }));
+    }, [normalizedPairs]);
+
+    // Right items (definitions) - SHUFFLED initially, user reorders them
+    const [rightItems, setRightItems] = useState(() => {
+        const items = normalizedPairs.map(p => ({ id: p.rightId, text: p.rightText }));
+        return shuffleArray(items);
     });
 
-    const handleLeftClick = (leftId) => {
-        if (submitted) return;
-        setSelected(leftId);
-    };
+    const [showFeedback, setShowFeedback] = useState(false);
+    const [isCorrect, setIsCorrect] = useState(false);
 
-    const handleRightClick = (rightId) => {
-        if (submitted || !selected) return;
-
-        // Remove any existing match for this right item
-        const newMatches = { ...matches };
-        Object.keys(newMatches).forEach(key => {
-            if (newMatches[key] === rightId) {
-                delete newMatches[key];
-            }
+    const handleCheck = () => {
+        // Check if the order matches: rightItems[i].id should equal leftItems[i].matchId
+        const allCorrect = leftItems.every((left, index) => {
+            return rightItems[index]?.id === left.matchId;
         });
-
-        // Add new match
-        newMatches[selected] = rightId;
-        setMatches(newMatches);
-        setSelected(null);
+        setIsCorrect(allCorrect);
+        setShowFeedback(true);
     };
 
-    const handleSubmit = () => {
-        if (Object.keys(matches).length !== pairs.length) return;
-
-        // Check if all matches are correct
-        const correct = pairs.every(pair => matches[pair.leftId] === pair.rightId);
-
-        setIsCorrect(correct);
-        setSubmitted(true);
-
-        if (correct) {
-            setTimeout(() => onComplete && onComplete(), 1500);
-        } else {
-            setShakeWrong(true);
-            setTimeout(() => setShakeWrong(false), 500);
-            if (onWrongAnswer) onWrongAnswer();
+    const handleContinue = () => {
+        if (isCorrect) {
+            onCorrect && onCorrect();
         }
     };
 
     const handleRetry = () => {
-        setSubmitted(false);
+        setRightItems(shuffleArray(normalizedPairs.map(p => ({ id: p.rightId, text: p.rightText }))));
+        setShowFeedback(false);
         setIsCorrect(false);
-        setSelected(null);
-        setMatches({});
+        onWrong && onWrong();
     };
 
-    const getMatchedRight = (leftId) => matches[leftId];
-    const isRightMatched = (rightId) => Object.values(matches).includes(rightId);
-
     return (
-        <div className="max-w-3xl mx-auto">
-            {/* Question */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-2xl border-4 border-black p-6 mb-6"
-                style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
-            >
-                <p className="text-lg text-gray-800">{text}</p>
-                <p className="text-sm text-gray-500 mt-2">Click a term, then click its match</p>
-            </motion.div>
+        <QuestionLayout
+            actName={actName}
+            questionNumber={questionNumber}
+            totalQuestions={totalQuestions}
+            lives={lives}
+            character={speaker}
+            reaction={!showFeedback ? 'neutral' : isCorrect ? 'happy' : 'sad'}
+        >
+            <div className="w-full h-full flex flex-col justify-start pt-4">
+                {/* Instruction header */}
+                <div
+                    className="bg-white rounded-2xl border-4 border-black p-4 mb-4"
+                    style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
+                >
+                    <div
+                        className="inline-block px-4 py-1 rounded-full font-bold text-white text-xs mb-2 border-2 border-black"
+                        style={{ backgroundColor: accentColor }}
+                    >
+                        Match Pairs
+                    </div>
+                    <p className="text-lg text-black font-medium">{instruction}</p>
+                    <p className="text-sm text-gray-500 mt-1 flex items-center gap-2">
+                        <span className="w-5 h-5 rounded-full border-2 border-gray-400 flex items-center justify-center bg-gray-100 text-xs">↕</span>
+                        Drag definitions on the right to match the terms on the left
+                    </p>
+                </div>
 
-            {/* Matching grid */}
-            <motion.div
-                animate={shakeWrong ? { x: [-10, 10, -10, 10, 0] } : {}}
-                transition={{ duration: 0.4 }}
-                className="grid grid-cols-2 gap-8"
-            >
-                {/* Left column - terms */}
-                <div className="space-y-3">
-                    <h3 className="text-white font-bold mb-4">Terms</h3>
-                    {pairs.map((pair) => {
-                        const matchedRight = getMatchedRight(pair.leftId);
-                        return (
-                            <motion.button
-                                key={pair.leftId}
-                                onClick={() => handleLeftClick(pair.leftId)}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className={`
-                                    w-full p-4 rounded-xl border-3 border-black text-left transition-all
-                                    ${selected === pair.leftId ? 'bg-yellow ring-4 ring-yellow/50' : 'bg-white'}
-                                    ${matchedRight ? 'bg-teal text-white' : ''}
-                                    ${submitted && isCorrect ? 'bg-green text-white' : ''}
-                                `}
-                                style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
-                                disabled={submitted}
-                            >
-                                <span className="font-medium">{pair.leftText}</span>
-                                {matchedRight && (
-                                    <span className="ml-2 text-sm opacity-75">
-                                        <ArrowRight className="inline w-4 h-4" />
+                {/* Matching columns */}
+                <div className="grid grid-cols-2 gap-6">
+                    {/* Left column - Static Terms */}
+                    <div
+                        className="bg-gray-100 p-3 rounded-3xl border-4 border-black"
+                        style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
+                    >
+                        <h4 className="text-black font-black text-center mb-5 text-lg uppercase tracking-wider">
+                            Terms
+                        </h4>
+                        <div className="space-y-2">
+                            {leftItems.map((item, index) => (
+                                <div
+                                    key={item.id}
+                                    className="flex items-center gap-3 p-4 bg-white rounded-xl border-4 border-black font-bold text-base"
+                                    style={{ boxShadow: '3px 3px 0 #1C1C1E' }}
+                                >
+                                    <span className="flex items-center justify-center w-8 h-8 bg-blue-500 text-white font-black rounded-lg text-sm border-2 border-black flex-shrink-0">
+                                        {index + 1}
                                     </span>
-                                )}
-                            </motion.button>
-                        );
-                    })}
-                </div>
-
-                {/* Right column - definitions */}
-                <div className="space-y-3">
-                    <h3 className="text-white font-bold mb-4">Definitions</h3>
-                    {rightItems.map((pair) => {
-                        const matched = isRightMatched(pair.rightId);
-                        return (
-                            <motion.button
-                                key={pair.rightId}
-                                onClick={() => handleRightClick(pair.rightId)}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className={`
-                                    w-full p-4 rounded-xl border-3 border-black text-left transition-all
-                                    ${matched ? 'bg-teal text-white' : 'bg-white'}
-                                    ${selected && !matched ? 'hover:bg-yellow/20' : ''}
-                                    ${submitted && isCorrect ? 'bg-green text-white' : ''}
-                                `}
-                                style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
-                                disabled={submitted || matched}
-                            >
-                                <span className="font-medium">{pair.rightText}</span>
-                            </motion.button>
-                        );
-                    })}
-                </div>
-            </motion.div>
-
-            {/* Submit / Feedback */}
-            {!submitted && (
-                <motion.button
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: Object.keys(matches).length === pairs.length ? 1 : 0.5 }}
-                    onClick={handleSubmit}
-                    disabled={Object.keys(matches).length !== pairs.length}
-                    className="btn-pop bg-green text-white w-full mt-6"
-                >
-                    <Check className="w-5 h-5" />
-                    Check Matches ({Object.keys(matches).length}/{pairs.length})
-                </motion.button>
-            )}
-
-            {submitted && (
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`mt-6 p-5 rounded-2xl border-3 border-black ${isCorrect ? 'bg-green' : 'bg-red'}`}
-                    style={{ boxShadow: '5px 5px 0 #1C1C1E' }}
-                >
-                    <div className="flex items-center gap-4 text-white">
-                        {isCorrect ? <Check className="w-8 h-8" /> : <AlertCircle className="w-8 h-8" />}
-                        <div>
-                            <p className="font-bold text-xl">
-                                {isCorrect ? 'All matched correctly!' : `Wrong matches! ${lives !== undefined ? `${lives} lives left` : ''}`}
-                            </p>
+                                    <span className="flex-1 text-black">{item.text}</span>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                    {!isCorrect && lives > 0 && (
-                        <button onClick={handleRetry} className="btn-pop bg-white text-black mt-4 w-full">
-                            <RefreshCw className="w-5 h-5" />
-                            Try Again
+
+                    {/* Right column - Reorderable Definitions */}
+                    <div
+                        className="bg-gray-100 p-3 rounded-3xl border-4 border-black"
+                        style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
+                    >
+                        <h4 className="text-black font-black text-center mb-5 text-lg uppercase tracking-wider">
+                            Definitions
+                        </h4>
+                        <Reorder.Group
+                            axis="y"
+                            values={rightItems}
+                            onReorder={setRightItems}
+                            className="space-y-2"
+                        >
+                            {rightItems.map((item, index) => (
+                                <Reorder.Item
+                                    key={item.id}
+                                    value={item}
+                                    className="flex items-center gap-3 p-4 bg-white rounded-xl border-4 border-black cursor-grab active:cursor-grabbing font-bold text-base"
+                                    style={{ boxShadow: '3px 3px 0 #1C1C1E' }}
+                                    initial={{ scale: 1 }}
+                                    animate={{ scale: 1, backgroundColor: '#FFFFFF' }}
+                                    whileDrag={{
+                                        scale: 1.03,
+                                        zIndex: 100,
+                                        boxShadow: '6px 6px 0 #1C1C1E',
+                                        backgroundColor: '#FFF9C4'
+                                    }}
+                                    transition={{ duration: 0.15 }}
+                                >
+                                    <span className="flex items-center justify-center w-8 h-8 bg-purple-500 text-white font-black rounded-lg text-sm border-2 border-black flex-shrink-0">
+                                        {index + 1}
+                                    </span>
+                                    <span className="flex-1 text-black">{item.text}</span>
+                                    <GripVertical className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                                </Reorder.Item>
+                            ))}
+                        </Reorder.Group>
+                    </div>
+                </div>
+
+                {/* Check button */}
+                {!showFeedback && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="mt-10 text-center"
+                    >
+                        <button onClick={handleCheck} className="btn-pop bg-green-500 text-white text-lg px-10 py-3 font-black rounded-xl border-2 border-black">
+                            Check Matches
                         </button>
+                    </motion.div>
+                )}
+
+                {/* Feedback */}
+                <AnimatePresence>
+                    {showFeedback && (
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-6 text-center"
+                        >
+                            <div
+                                className={`inline-block px-8 py-4 rounded-3xl border-4 border-black ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`}
+                                style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
+                            >
+                                <p className="text-2xl font-black text-white mb-2">
+                                    {isCorrect ? 'Perfect Matches!' : 'Wrong Order!'}
+                                </p>
+                                <div className="flex gap-4 justify-center">
+                                    {!isCorrect && lives > 1 && (
+                                        <button onClick={handleRetry} className="btn-pop bg-white text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Try Again
+                                        </button>
+                                    )}
+                                    {!isCorrect && lives <= 1 && (
+                                        <button onClick={() => onWrong && onWrong()} className="btn-pop bg-white text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Continue
+                                        </button>
+                                    )}
+                                    {isCorrect && (
+                                        <button onClick={handleContinue} className="btn-pop bg-yellow-400 text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Continue
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        </motion.div>
                     )}
-                </motion.div>
-            )}
-        </div>
+                </AnimatePresence>
+            </div>
+        </QuestionLayout>
     );
 }
 
 MatchingPanel.propTypes = {
     speaker: PropTypes.string,
-    text: PropTypes.string.isRequired,
+    instruction: PropTypes.string.isRequired,
     pairs: PropTypes.arrayOf(PropTypes.shape({
-        leftId: PropTypes.string.isRequired,
-        leftText: PropTypes.string.isRequired,
-        rightId: PropTypes.string.isRequired,
-        rightText: PropTypes.string.isRequired,
+        left: PropTypes.string,
+        right: PropTypes.string,
+        leftId: PropTypes.string,
+        leftText: PropTypes.string,
+        rightId: PropTypes.string,
+        rightText: PropTypes.string,
     })).isRequired,
-    onComplete: PropTypes.func,
-    onWrongAnswer: PropTypes.func,
+    onCorrect: PropTypes.func,
+    onWrong: PropTypes.func,
     lives: PropTypes.number,
+    actName: PropTypes.string,
+    questionNumber: PropTypes.number,
+    totalQuestions: PropTypes.number,
 };

@@ -1,136 +1,201 @@
-import { useState } from 'react';
-import { motion, Reorder } from 'framer-motion';
+import { useState, useMemo } from 'react';
+import { motion, AnimatePresence, Reorder } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { Check, AlertCircle, RefreshCw, GripVertical } from 'lucide-react';
+import { GripVertical } from 'lucide-react';
+import { characterColors } from './Characters';
+import QuestionLayout from './QuestionLayout';
 
-// Ordering/Sequence component - Full Width Layout
-export function OrderingPanel({ speaker, text, items, onComplete, onWrongAnswer, lives }) {
-    const [orderedItems, setOrderedItems] = useState(() => {
-        return [...items].sort(() => Math.random() - 0.5);
-    });
-    const [submitted, setSubmitted] = useState(false);
+// Fisher-Yates shuffle
+function shuffleArray(array) {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+}
+
+export function OrderingPanel({ speaker, instruction, items, correctOrder, onCorrect, onWrong, lives, actName, questionNumber, totalQuestions }) {
+    // Normalize items to handle both string arrays and object arrays
+    const normalizedItems = useMemo(() => items.map((item, idx) => {
+        if (typeof item === 'string') {
+            return { id: `item-${idx}`, text: item };
+        }
+        return item;
+    }), [items]);
+
+    // Normalize correctOrder similarly
+    const normalizedCorrectOrder = useMemo(() => correctOrder ? correctOrder.map((item, idx) => {
+        if (typeof item === 'string') {
+            return { id: `item-${idx}`, text: item };
+        }
+        return item;
+    }) : normalizedItems, [correctOrder, normalizedItems]);
+
+    // Shuffle items initially so they don't appear in correct order
+    const [orderedItems, setOrderedItems] = useState(() => shuffleArray(normalizedItems));
+    const [showFeedback, setShowFeedback] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
-    const [shakeWrong, setShakeWrong] = useState(false);
 
-    const handleSubmit = () => {
-        const correctOrder = items.map(item => item.id);
-        const currentOrder = orderedItems.map(item => item.id);
-        const correct = JSON.stringify(correctOrder) === JSON.stringify(currentOrder);
+    const accentColor = characterColors[speaker] || '#007AFF';
 
+    const handleCheck = () => {
+        // Compare by text or id
+        const correct = orderedItems.every((item, index) => {
+            const correctItem = normalizedCorrectOrder[index];
+            return item.text === correctItem.text || item.id === correctItem.id;
+        });
         setIsCorrect(correct);
-        setSubmitted(true);
+        setShowFeedback(true);
+    };
 
-        if (correct) {
-            setTimeout(() => onComplete && onComplete(), 1500);
-        } else {
-            setShakeWrong(true);
-            setTimeout(() => setShakeWrong(false), 500);
-            if (onWrongAnswer) onWrongAnswer();
+    const handleContinue = () => {
+        if (isCorrect) {
+            onCorrect && onCorrect();
         }
     };
 
     const handleRetry = () => {
-        setSubmitted(false);
+        setOrderedItems([...normalizedItems]);
+        setShowFeedback(false);
         setIsCorrect(false);
-        setOrderedItems([...items].sort(() => Math.random() - 0.5));
+        onWrong && onWrong();
     };
 
     return (
-        <div className="w-full max-w-4xl mx-auto px-4">
-            {/* Two column layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-                {/* Question */}
-                <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="bg-white rounded-2xl border-4 border-black p-6"
-                    style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
-                >
-                    <p className="text-xl text-gray-800">{text}</p>
-                    <p className="text-sm text-gray-500 mt-3">Drag items to reorder</p>
-                </motion.div>
-
-                {/* Reorderable list */}
-                <motion.div
-                    animate={shakeWrong ? { x: [-10, 10, -10, 10, 0] } : {}}
-                    transition={{ duration: 0.4 }}
-                >
-                    <Reorder.Group
-                        values={orderedItems}
-                        onReorder={setOrderedItems}
-                        className="space-y-3"
+        <QuestionLayout
+            actName={actName}
+            questionNumber={questionNumber}
+            totalQuestions={totalQuestions}
+            lives={lives}
+            character={speaker}
+            reaction={!showFeedback ? 'neutral' : isCorrect ? 'happy' : 'sad'}
+        >
+            <div className="w-full h-full flex flex-col justify-start pt-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Left: Instruction Card */}
+                    <div
+                        className="bg-white rounded-3xl border-4 border-black p-6 relative"
+                        style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
                     >
-                        {orderedItems.map((item, index) => (
-                            <Reorder.Item
-                                key={item.id}
-                                value={item}
-                                className={`
-                                    flex items-center gap-4 p-4 rounded-xl border-3 border-black cursor-grab active:cursor-grabbing
-                                    ${submitted && isCorrect ? 'bg-green' : 'bg-white'}
-                                    ${submitted && !isCorrect ? 'bg-red/20' : ''}
-                                `}
-                                style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
-                                disabled={submitted}
-                            >
-                                <span className="w-10 h-10 rounded-full bg-yellow text-black flex items-center justify-center font-bold text-lg border-2 border-black">
-                                    {index + 1}
-                                </span>
-                                <GripVertical className="w-5 h-5 text-gray-400" />
-                                <span className={`flex-1 font-medium text-lg ${submitted && isCorrect ? 'text-white' : 'text-gray-800'}`}>
-                                    {item.text}
-                                </span>
-                            </Reorder.Item>
-                        ))}
-                    </Reorder.Group>
-
-                    {/* Submit / Feedback */}
-                    {!submitted && (
-                        <motion.button
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            onClick={handleSubmit}
-                            className="btn-pop bg-green text-white w-full mt-6"
+                        <div
+                            className="inline-block px-4 py-1 rounded-full font-bold text-white text-xs mb-3 border-2 border-black"
+                            style={{ backgroundColor: accentColor, boxShadow: '2px 2px 0 #1C1C1E' }}
                         >
-                            <Check className="w-5 h-5" />
-                            Check Order
-                        </motion.button>
-                    )}
+                            Put in Order
+                        </div>
+                        <p className="text-xl leading-relaxed text-black font-medium">{instruction}</p>
+                        <p className="mt-4 text-black/50 font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                            <span className="w-6 h-6 rounded-full border-2 border-black/20 flex items-center justify-center bg-black/5 text-xs">↕</span>
+                            Drag items to reorder
+                        </p>
+                    </div>
 
-                    {submitted && (
+                    {/* Right: Reorderable List */}
+                    <div
+                        className="bg-gray-100 p-3 rounded-3xl border-4 border-black"
+                        style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
+                    >
+                        <Reorder.Group
+                            axis="y"
+                            values={orderedItems}
+                            onReorder={setOrderedItems}
+                            className="space-y-2"
+                        >
+                            {orderedItems.map((item, index) => (
+                                <Reorder.Item
+                                    key={item.id}
+                                    value={item}
+                                    className="flex items-center gap-3 p-4 bg-white rounded-xl border-4 border-black cursor-grab active:cursor-grabbing font-bold text-base"
+                                    style={{ boxShadow: '3px 3px 0 #1C1C1E' }}
+                                    whileDrag={{ scale: 1.03, zIndex: 100, boxShadow: '6px 6px 0 #1C1C1E', backgroundColor: '#FFF9C4' }}
+                                >
+                                    <span className="flex items-center justify-center w-8 h-8 bg-blue-500 text-white font-black rounded-lg text-sm border-2 border-black">
+                                        {index + 1}
+                                    </span>
+                                    <span className="flex-1 text-black">{item.text}</span>
+                                    <GripVertical className="w-5 h-5 text-gray-400" />
+                                </Reorder.Item>
+                            ))}
+                        </Reorder.Group>
+                    </div>
+                </div>
+
+                {/* Check button */}
+                {!showFeedback && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="mt-6 text-center"
+                    >
+                        <button onClick={handleCheck} className="btn-pop bg-green-500 text-white text-lg px-10 py-3 font-black rounded-xl border-2 border-black">
+                            Check Order
+                        </button>
+                    </motion.div>
+                )}
+
+                {/* Feedback */}
+                <AnimatePresence>
+                    {showFeedback && (
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className={`mt-6 p-5 rounded-2xl border-3 border-black ${isCorrect ? 'bg-green' : 'bg-red'}`}
-                            style={{ boxShadow: '5px 5px 0 #1C1C1E' }}
+                            className="mt-6 text-center"
                         >
-                            <div className="flex items-center gap-4 text-white">
-                                {isCorrect ? <Check className="w-8 h-8" /> : <AlertCircle className="w-8 h-8" />}
-                                <p className="font-bold text-xl">
-                                    {isCorrect ? 'Perfect order!' : `Wrong! ${lives !== undefined ? `${lives} lives left` : ''}`}
+                            <div
+                                className={`inline-block px-8 py-4 rounded-3xl border-4 border-black ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`}
+                                style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
+                            >
+                                <p className="text-2xl font-black text-white mb-2">
+                                    {isCorrect ? 'Correct!' : 'Wrong Order!'}
                                 </p>
+                                <div className="flex gap-4 justify-center">
+                                    {!isCorrect && lives > 1 && (
+                                        <button onClick={handleRetry} className="btn-pop bg-white text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Try Again
+                                        </button>
+                                    )}
+                                    {!isCorrect && lives <= 1 && (
+                                        <button onClick={() => onWrong && onWrong()} className="btn-pop bg-white text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Continue
+                                        </button>
+                                    )}
+                                    {isCorrect && (
+                                        <button onClick={handleContinue} className="btn-pop bg-yellow-400 text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                            Continue
+                                        </button>
+                                    )}
+                                </div>
                             </div>
-                            {!isCorrect && lives > 0 && (
-                                <button onClick={handleRetry} className="btn-pop bg-white text-black mt-4 w-full">
-                                    <RefreshCw className="w-5 h-5" />
-                                    Try Again
-                                </button>
-                            )}
                         </motion.div>
                     )}
-                </motion.div>
+                </AnimatePresence>
             </div>
-        </div>
+        </QuestionLayout>
     );
 }
 
 OrderingPanel.propTypes = {
     speaker: PropTypes.string,
-    text: PropTypes.string.isRequired,
-    items: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        text: PropTypes.string.isRequired,
-    })).isRequired,
-    onComplete: PropTypes.func,
-    onWrongAnswer: PropTypes.func,
+    instruction: PropTypes.string.isRequired,
+    items: PropTypes.arrayOf(PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            text: PropTypes.string.isRequired,
+        })
+    ])).isRequired,
+    correctOrder: PropTypes.arrayOf(PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.shape({
+            id: PropTypes.string,
+            text: PropTypes.string,
+        })
+    ])),
+    onCorrect: PropTypes.func,
+    onWrong: PropTypes.func,
     lives: PropTypes.number,
+    actName: PropTypes.string,
+    questionNumber: PropTypes.number,
+    totalQuestions: PropTypes.number,
 };

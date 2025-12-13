@@ -2,95 +2,107 @@ import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { Swords, FlaskConical, ChevronRight } from 'lucide-react';
 import { CellAvatar } from './Characters';
+import QuestionLayout from './QuestionLayout';
 
-export function PathwayChoice({ text, options, onSelect }) {
+export function PathwayChoice({ text, options, onSelect, lives, actName, questionNumber, totalQuestions }) {
     return (
-        <div className="max-w-3xl mx-auto text-center">
-            {/* Title */}
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-10"
-            >
-                <h2 className="text-4xl font-bold text-white mb-4 drop-shadow-lg">
-                    Choose Your Path
-                </h2>
-                <p className="text-white/90 text-xl">{text}</p>
-            </motion.div>
+        <QuestionLayout
+            actName={actName}
+            questionNumber={questionNumber}
+            totalQuestions={totalQuestions}
+            lives={lives}
+            character="macrophage"
+            reaction="neutral"
+        >
+            <div className="w-full h-full flex flex-col justify-start pt-2">
+                <div className="max-w-4xl mx-auto">
+                    {/* Title */}
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mb-6 text-center"
+                    >
+                        <h2 className="text-3xl font-black text-black mb-3 uppercase tracking-wide">
+                            Choose Your Strategy
+                        </h2>
+                        <p className="text-black text-lg font-medium max-w-2xl mx-auto leading-relaxed">{text}</p>
+                    </motion.div>
 
-            {/* Path options */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {options.map((option, index) => {
-                    const isCellMediated = option.id === 'cell_mediated';
-                    const bgColor = isCellMediated ? '#FF3B30' : '#007AFF';
-                    const Icon = isCellMediated ? Swords : FlaskConical;
-                    const cellType = isCellMediated ? 'cytotoxicT' : 'bCell';
+                    {/* Path options */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                        {options.map((option, index) => {
+                            const isCellMediated = option.id === 'cell_mediated';
+                            const bgColor = isCellMediated ? '#FF3B30' : '#007AFF';
+                            const Icon = isCellMediated ? Swords : FlaskConical;
+                            const cellType = isCellMediated ? 'cytotoxicT' : 'bCell';
 
-                    return (
-                        <motion.button
-                            key={option.id}
-                            initial={{ opacity: 0, y: 30, rotate: index === 0 ? -3 : 3 }}
-                            animate={{ opacity: 1, y: 0, rotate: 0 }}
-                            transition={{
-                                delay: 0.3 + index * 0.2,
-                                type: 'spring',
-                                stiffness: 200
-                            }}
-                            whileHover={{
-                                scale: 1.05,
-                                rotate: index === 0 ? -2 : 2,
-                                y: -10
-                            }}
-                            whileTap={{ scale: 0.95 }}
-                            onClick={() => onSelect(option.id)}
-                            className="relative p-8 rounded-3xl border-4 border-black text-left cursor-pointer"
-                            style={{
-                                backgroundColor: bgColor,
-                                boxShadow: '8px 8px 0 #1C1C1E'
-                            }}
-                        >
-                            {/* Character avatar with WHITE BACKGROUND for visibility */}
-                            <div className="flex justify-center mb-6">
-                                <motion.div
-                                    animate={{ y: [0, -8, 0] }}
+                            return (
+                                <motion.button
+                                    key={option.id}
+                                    initial={{ opacity: 0, y: 20, rotate: index === 0 ? -2 : 2 }}
+                                    animate={{ opacity: 1, y: 0, rotate: 0 }}
                                     transition={{
-                                        repeat: Infinity,
-                                        duration: 2,
-                                        delay: index * 0.5
+                                        delay: 0.2 + index * 0.15,
+                                        type: 'spring',
+                                        stiffness: 200
                                     }}
-                                    className="bg-white rounded-full p-3 border-3 border-black"
-                                    style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
+                                    whileHover={{
+                                        scale: 1.03,
+                                        rotate: index === 0 ? -1 : 1,
+                                        y: -5
+                                    }}
+                                    whileTap={{ scale: 0.97 }}
+                                    onClick={() => onSelect(option.id)}
+                                    className="relative p-5 rounded-2xl border-4 border-black text-left cursor-pointer transition-colors"
+                                    style={{
+                                        backgroundColor: bgColor,
+                                        boxShadow: '6px 6px 0 #1C1C1E'
+                                    }}
                                 >
-                                    <CellAvatar
-                                        type={cellType}
-                                        size={80}
-                                        mood="excited"
-                                    />
-                                </motion.div>
-                            </div>
+                                    {/* Character avatar */}
+                                    <div className="flex justify-center mb-4">
+                                        <motion.div
+                                            animate={{ y: [0, -5, 0] }}
+                                            transition={{
+                                                repeat: Infinity,
+                                                duration: 2,
+                                                delay: index * 0.5
+                                            }}
+                                            className="bg-white rounded-full p-2 border-4 border-black"
+                                            style={{ boxShadow: '3px 3px 0 #1C1C1E' }}
+                                        >
+                                            <CellAvatar
+                                                type={cellType}
+                                                size={70}
+                                                mood="excited"
+                                            />
+                                        </motion.div>
+                                    </div>
 
-                            {/* Icon badge */}
-                            <div
-                                className="absolute top-4 right-4 w-12 h-12 rounded-full bg-white border-3 border-black flex items-center justify-center"
-                                style={{ boxShadow: '3px 3px 0 #1C1C1E' }}
-                            >
-                                <Icon className="w-6 h-6" style={{ color: bgColor }} />
-                            </div>
+                                    {/* Icon badge */}
+                                    <div
+                                        className="absolute top-3 right-3 w-10 h-10 rounded-full bg-white border-2 border-black flex items-center justify-center"
+                                        style={{ boxShadow: '2px 2px 0 #1C1C1E' }}
+                                    >
+                                        <Icon className="w-5 h-5" style={{ color: bgColor }} />
+                                    </div>
 
-                            {/* Content */}
-                            <h3 className="text-2xl font-bold text-white mb-3">{option.text}</h3>
-                            <p className="text-white/90 mb-4">{option.description}</p>
+                                    {/* Content */}
+                                    <h3 className="text-xl font-black text-white mb-2">{option.text}</h3>
+                                    <p className="text-white/90 mb-4 text-sm font-medium leading-snug min-h-[3rem]">{option.description}</p>
 
-                            {/* CTA */}
-                            <div className="flex items-center gap-2 text-white font-bold">
-                                <span>Start Journey</span>
-                                <ChevronRight className="w-5 h-5" />
-                            </div>
-                        </motion.button>
-                    );
-                })}
+                                    {/* CTA */}
+                                    <div className="flex items-center justify-center gap-2 text-black bg-white py-2 rounded-xl border-2 border-black font-black text-sm">
+                                        <span>Start Journey</span>
+                                        <ChevronRight className="w-5 h-5" />
+                                    </div>
+                                </motion.button>
+                            );
+                        })}
+                    </div>
+                </div>
             </div>
-        </div>
+        </QuestionLayout>
     );
 }
 
@@ -102,4 +114,8 @@ PathwayChoice.propTypes = {
         description: PropTypes.string,
     })).isRequired,
     onSelect: PropTypes.func.isRequired,
+    lives: PropTypes.number,
+    actName: PropTypes.string,
+    questionNumber: PropTypes.number,
+    totalQuestions: PropTypes.number,
 };
