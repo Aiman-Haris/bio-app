@@ -195,10 +195,10 @@ export function QuestionLayout({
             </div>
 
             {/* Main Content Stage - Scrollable Area */}
-            <div className="relative z-10 flex-1 w-full overflow-y-auto overflow-x-hidden flex flex-col md:flex-row items-start justify-center p-4 pt-4">
+            <div className="relative z-10 flex-1 w-full overflow-y-auto overflow-x-hidden flex flex-col items-center justify-start p-4 pt-4 md:pt-12">
 
                 {/* Content Container */}
-                <div className="w-full max-w-5xl relative z-10 md:mr-64 mt-4 pb-32">
+                <div className="w-full max-w-5xl relative z-10 md:mr-64 mt-4 pb-32 flex flex-col items-center">
                     {children}
                 </div>
 

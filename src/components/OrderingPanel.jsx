@@ -71,21 +71,21 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
             character={speaker}
             reaction={!showFeedback ? 'neutral' : isCorrect ? 'happy' : 'sad'}
         >
-            <div className="w-full h-full flex flex-col justify-start pt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="w-full h-full flex flex-col justify-start pt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
                     {/* Left: Instruction Card */}
                     <div
-                        className="bg-white rounded-3xl border-4 border-black p-6 relative"
-                        style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
+                        className="bg-white rounded-3xl border-4 border-black p-4 md:p-6 relative"
+                        style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
                     >
                         <div
-                            className="inline-block px-4 py-1 rounded-full font-bold text-white text-xs mb-3 border-2 border-black"
+                            className="inline-block px-4 py-1 rounded-full font-bold text-white text-xs mb-2 md:mb-3 border-2 border-black"
                             style={{ backgroundColor: accentColor, boxShadow: '2px 2px 0 #1C1C1E' }}
                         >
                             Put in Order
                         </div>
-                        <p className="text-xl leading-relaxed text-black font-medium">{instruction}</p>
-                        <p className="mt-4 text-black/50 font-bold text-sm uppercase tracking-wider flex items-center gap-2">
+                        <p className="text-lg md:text-xl leading-relaxed text-black font-medium">{instruction}</p>
+                        <p className="mt-2 md:mt-4 text-black/50 font-bold text-xs md:text-sm uppercase tracking-wider flex items-center gap-2">
                             <span className="w-6 h-6 rounded-full border-2 border-black/20 flex items-center justify-center bg-black/5 text-xs">↕</span>
                             Drag items to reorder
                         </p>
@@ -93,7 +93,7 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
 
                     {/* Right: Reorderable List */}
                     <div
-                        className="bg-gray-100 p-3 rounded-3xl border-4 border-black"
+                        className="bg-gray-100 p-2 md:p-3 rounded-3xl border-4 border-black"
                         style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
                     >
                         <Reorder.Group
@@ -106,15 +106,15 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
                                 <Reorder.Item
                                     key={item.id}
                                     value={item}
-                                    className="flex items-center gap-3 p-4 bg-white rounded-xl border-4 border-black cursor-grab active:cursor-grabbing font-bold text-base"
+                                    className="flex items-center gap-2 md:gap-3 p-3 md:p-4 bg-white rounded-xl border-4 border-black cursor-grab active:cursor-grabbing font-bold text-sm md:text-base"
                                     style={{ boxShadow: '3px 3px 0 #1C1C1E' }}
                                     whileDrag={{ scale: 1.03, zIndex: 100, boxShadow: '6px 6px 0 #1C1C1E', backgroundColor: '#FFF9C4' }}
                                 >
-                                    <span className="flex items-center justify-center w-8 h-8 bg-blue-500 text-white font-black rounded-lg text-sm border-2 border-black">
+                                    <span className="flex items-center justify-center w-6 h-6 md:w-8 md:h-8 bg-blue-500 text-white font-black rounded-lg text-xs md:text-sm border-2 border-black flex-none">
                                         {index + 1}
                                     </span>
-                                    <span className="flex-1 text-black">{item.text}</span>
-                                    <GripVertical className="w-5 h-5 text-gray-400" />
+                                    <span className="flex-1 text-black leading-tight">{item.text}</span>
+                                    <GripVertical className="w-4 h-4 md:w-5 md:h-5 text-gray-400 flex-none" />
                                 </Reorder.Item>
                             ))}
                         </Reorder.Group>

@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { isMobile } from 'react-device-detect';
 import { Swords, FlaskConical, ChevronRight } from 'lucide-react';
 import { CellAvatar } from './Characters';
 import QuestionLayout from './QuestionLayout';
@@ -15,21 +16,21 @@ export function PathwayChoice({ text, options, onSelect, lives, actName, questio
             reaction="neutral"
         >
             <div className="w-full h-full flex flex-col justify-start pt-2">
-                <div className="max-w-4xl mx-auto">
+                <div className="max-w-4xl mx-auto w-full">
                     {/* Title */}
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="mb-6 text-center"
+                        className="mb-4 md:mb-6 text-center"
                     >
-                        <h2 className="text-3xl font-black text-black mb-3 uppercase tracking-wide">
+                        <h2 className="text-xl md:text-3xl font-black text-black mb-2 md:mb-3 uppercase tracking-wide">
                             Choose Your Strategy
                         </h2>
-                        <p className="text-black text-lg font-medium max-w-2xl mx-auto leading-relaxed">{text}</p>
+                        <p className="text-black text-sm md:text-lg font-medium max-w-2xl mx-auto leading-relaxed px-2">{text}</p>
                     </motion.div>
 
                     {/* Path options */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 w-full">
                         {options.map((option, index) => {
                             const isCellMediated = option.id === 'cell_mediated';
                             const bgColor = isCellMediated ? '#FF3B30' : '#007AFF';
@@ -53,14 +54,14 @@ export function PathwayChoice({ text, options, onSelect, lives, actName, questio
                                     }}
                                     whileTap={{ scale: 0.97 }}
                                     onClick={() => onSelect(option.id)}
-                                    className="relative p-5 rounded-2xl border-4 border-black text-left cursor-pointer transition-colors"
+                                    className="relative p-4 md:p-5 rounded-2xl border-4 border-black text-left cursor-pointer transition-colors"
                                     style={{
                                         backgroundColor: bgColor,
-                                        boxShadow: '6px 6px 0 #1C1C1E'
+                                        boxShadow: '4px 4px 0 #1C1C1E'
                                     }}
                                 >
                                     {/* Character avatar */}
-                                    <div className="flex justify-center mb-4">
+                                    <div className="flex justify-center mb-2 md:mb-4">
                                         <motion.div
                                             animate={{ y: [0, -5, 0] }}
                                             transition={{
@@ -68,12 +69,12 @@ export function PathwayChoice({ text, options, onSelect, lives, actName, questio
                                                 duration: 2,
                                                 delay: index * 0.5
                                             }}
-                                            className="bg-white rounded-full p-2 border-4 border-black"
-                                            style={{ boxShadow: '3px 3px 0 #1C1C1E' }}
+                                            className="bg-white rounded-full p-1 md:p-2 border-4 border-black"
+                                            style={{ boxShadow: '2px 2px 0 #1C1C1E' }}
                                         >
                                             <CellAvatar
                                                 type={cellType}
-                                                size={70}
+                                                size={isMobile ? 50 : 70}
                                                 mood="excited"
                                             />
                                         </motion.div>
@@ -81,20 +82,20 @@ export function PathwayChoice({ text, options, onSelect, lives, actName, questio
 
                                     {/* Icon badge */}
                                     <div
-                                        className="absolute top-3 right-3 w-10 h-10 rounded-full bg-white border-2 border-black flex items-center justify-center"
+                                        className="absolute top-2 right-2 md:top-3 md:right-3 w-8 h-8 md:w-10 md:h-10 rounded-full bg-white border-2 border-black flex items-center justify-center"
                                         style={{ boxShadow: '2px 2px 0 #1C1C1E' }}
                                     >
-                                        <Icon className="w-5 h-5" style={{ color: bgColor }} />
+                                        <Icon className="w-4 h-4 md:w-5 md:h-5" style={{ color: bgColor }} />
                                     </div>
 
                                     {/* Content */}
-                                    <h3 className="text-xl font-black text-white mb-2">{option.text}</h3>
-                                    <p className="text-white/90 mb-4 text-sm font-medium leading-snug min-h-[3rem]">{option.description}</p>
+                                    <h3 className="text-lg md:text-xl font-black text-white mb-1 md:mb-2">{option.text}</h3>
+                                    <p className="text-white/90 mb-2 md:mb-4 text-xs md:text-sm font-medium leading-snug min-h-[2.5rem] md:min-h-[3rem]">{option.description}</p>
 
                                     {/* CTA */}
-                                    <div className="flex items-center justify-center gap-2 text-black bg-white py-2 rounded-xl border-2 border-black font-black text-sm">
+                                    <div className="flex items-center justify-center gap-2 text-black bg-white py-2 rounded-xl border-2 border-black font-black text-xs md:text-sm">
                                         <span>Start Journey</span>
-                                        <ChevronRight className="w-5 h-5" />
+                                        <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
                                     </div>
                                 </motion.button>
                             );

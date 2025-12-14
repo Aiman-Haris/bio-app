@@ -289,10 +289,11 @@ export const storyData = {
                 { id: 's1', text: 'APC presents antigen' },
                 { id: 's2', text: 'Helper T binds with CD4' },
                 { id: 's3', text: 'APC releases IL-1' },
+                { id: 's6', text: 'Helper T activates' },
                 { id: 's4', text: 'Helper T releases IL-2' },
                 { id: 's5', text: 'Cytotoxic T activates' },
             ],
-            correctOrder: ['s1', 's2', 's3', 's4', 's5'],
+            correctOrder: ['s1', 's2', 's3', 's6', 's4', 's5'],
             next: 'cm_20_ready',
         },
         // Transition Quote/Ready

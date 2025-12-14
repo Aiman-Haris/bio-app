@@ -43,39 +43,39 @@ export function FillBlankPanel({ speaker, question, correctAnswer, onCorrect, on
             character={speaker}
             reaction={!showFeedback ? 'neutral' : isCorrect ? 'happy' : 'sad'}
         >
-            <div className="w-full h-full flex flex-col justify-start pt-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+            <div className="w-full h-full flex flex-col justify-start pt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6 items-center">
                     {/* Left: Question Card */}
                     <div
-                        className="bg-white rounded-3xl border-4 border-black p-6 relative"
-                        style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
+                        className="bg-white rounded-3xl border-4 border-black p-4 md:p-6 relative"
+                        style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
                     >
                         <div
-                            className="absolute -top-4 left-6 px-4 py-1 rounded-full font-bold text-white text-xs border-2 border-black"
+                            className="absolute -top-3 md:-top-4 left-4 md:left-6 px-3 md:px-4 py-1 rounded-full font-bold text-white text-xs border-2 border-black"
                             style={{ backgroundColor: accentColor, boxShadow: '2px 2px 0 #1C1C1E' }}
                         >
                             {name}
                         </div>
-                        <p className="text-xl leading-relaxed text-black font-medium mt-2">{question}</p>
+                        <p className="text-lg md:text-xl leading-relaxed text-black font-medium mt-2">{question}</p>
                     </div>
 
                     {/* Right: Input */}
-                    <div className="flex flex-col justify-center bg-teal-100 p-6 rounded-3xl border-4 border-black" style={{ boxShadow: '6px 6px 0 #1C1C1E' }}>
+                    <div className="flex flex-col justify-center bg-teal-100 p-4 md:p-6 rounded-3xl border-4 border-black" style={{ boxShadow: '4px 4px 0 #1C1C1E' }}>
                         <form onSubmit={handleSubmit}>
-                            <label className="block text-black font-black text-xl mb-4 text-center">Your Answer</label>
+                            <label className="block text-black font-black text-lg md:text-xl mb-3 md:mb-4 text-center">Your Answer</label>
                             <input
                                 type="text"
                                 value={answer}
                                 onChange={(e) => setAnswer(e.target.value)}
                                 placeholder="Type here..."
                                 disabled={showFeedback}
-                                className="w-full px-6 py-4 text-xl text-center font-bold border-4 border-black rounded-2xl mb-4 focus:outline-none focus:ring-4 focus:ring-teal-400 shadow-[4px_4px_0_#1C1C1E] text-black bg-white"
+                                className="w-full px-4 md:px-6 py-3 md:py-4 text-lg md:text-xl text-center font-bold border-4 border-black rounded-2xl mb-3 md:mb-4 focus:outline-none focus:ring-4 focus:ring-teal-400 shadow-[4px_4px_0_#1C1C1E] text-black bg-white"
                                 autoFocus
                             />
                             <button
                                 type="submit"
                                 disabled={showFeedback || !answer.trim()}
-                                className="btn-pop bg-teal-500 text-white w-full text-lg py-3 font-bold disabled:opacity-50 disabled:cursor-not-allowed rounded-xl border-4 border-black"
+                                className="btn-pop bg-teal-500 text-white w-full text-base md:text-lg py-2 md:py-3 font-bold disabled:opacity-50 disabled:cursor-not-allowed rounded-xl border-4 border-black"
                                 style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
                             >
                                 Submit Answer

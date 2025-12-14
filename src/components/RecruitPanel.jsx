@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { isMobile } from 'react-device-detect';
 import { Check, RefreshCw } from 'lucide-react';
 import { CharacterAvatar, characterColors } from './Characters';
 import QuestionLayout from './QuestionLayout';
@@ -51,33 +52,33 @@ export function RecruitPanel({ speaker, text, options, correctCount, successText
             character={speaker}
             reaction={!submitted ? 'neutral' : isCorrect ? 'happy' : 'sad'}
         >
-            <div className="w-full h-full flex flex-col justify-center">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="w-full h-full flex flex-col justify-start pt-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                     {/* Left: Instructions */}
                     <div
-                        className="bg-white rounded-3xl border-4 border-black p-8 relative flex flex-col justify-center gap-6"
-                        style={{ boxShadow: '8px 8px 0 #1C1C1E' }}
+                        className="bg-white rounded-3xl border-4 border-black p-4 md:p-8 relative flex flex-col justify-center gap-3 md:gap-6"
+                        style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
                     >
                         <div>
                             <div
-                                className="inline-block px-4 py-1 md:px-6 md:py-2 rounded-full font-bold text-white text-xs md:text-sm mb-4 border-2 border-black"
+                                className="inline-block px-4 py-1 md:px-6 md:py-2 rounded-full font-bold text-white text-xs md:text-sm mb-2 md:mb-4 border-2 border-black"
                                 style={{ backgroundColor: characterColors[speaker] || '#00C7BE', boxShadow: '2px 2px 0 #1C1C1E' }}
                             >
                                 Recruit Cells
                             </div>
-                            <p className="text-xl md:text-2xl leading-relaxed text-gray-800 font-medium">{text}</p>
+                            <p className="text-lg md:text-2xl leading-relaxed text-gray-800 font-medium">{text}</p>
                         </div>
 
                         {/* Selection counter */}
-                        <div className="flex items-center gap-4 bg-gray-100 p-4 rounded-2xl border-2 border-black/10">
-                            <span className="font-bold text-gray-700 uppercase tracking-wider text-sm">Target:</span>
-                            <div className="flex gap-3">
+                        <div className="flex items-center gap-3 md:gap-4 bg-gray-100 p-3 md:p-4 rounded-2xl border-2 border-black/10">
+                            <span className="font-bold text-gray-700 uppercase tracking-wider text-xs md:text-sm">Target:</span>
+                            <div className="flex gap-2 md:gap-3">
                                 {[...Array(correctCount)].map((_, i) => (
                                     <div
                                         key={i}
-                                        className={`w-10 h-10 rounded-full border-4 border-black flex items-center justify-center transition-all ${i < selected.length ? 'bg-yellow scale-110 shadow-sm' : 'bg-white'}`}
+                                        className={`w-8 h-8 md:w-10 md:h-10 rounded-full border-4 border-black flex items-center justify-center transition-all ${i < selected.length ? 'bg-yellow scale-110 shadow-sm' : 'bg-white'}`}
                                     >
-                                        {i < selected.length && <Check className="w-6 h-6 text-black" strokeWidth={4} />}
+                                        {i < selected.length && <Check className="w-4 h-4 md:w-6 md:h-6 text-black" strokeWidth={4} />}
                                     </div>
                                 ))}
                             </div>
@@ -85,7 +86,7 @@ export function RecruitPanel({ speaker, text, options, correctCount, successText
                     </div>
 
                     {/* Right: Character grid */}
-                    <div className="grid grid-cols-2 gap-4 auto-rows-fr">
+                    <div className="grid grid-cols-2 gap-2 md:gap-4 auto-rows-fr">
                         {options.map((option) => {
                             const isSelected = selected.includes(option.id);
                             const showResult = submitted;
@@ -99,7 +100,7 @@ export function RecruitPanel({ speaker, text, options, correctCount, successText
                                     whileHover={!submitted ? { scale: 1.05, zIndex: 10 } : {}}
                                     whileTap={!submitted ? { scale: 0.95 } : {}}
                                     className={`
-                                        p-4 rounded-3xl border-4 border-black text-center transition-all flex flex-col items-center justify-center gap-2 relative overflow-hidden
+                                        p-2 md:p-4 rounded-3xl border-4 border-black text-center transition-all flex flex-col items-center justify-center gap-1 md:gap-2 relative overflow-hidden
                                         ${showResult && isCorrect && option.correct ? 'bg-green-500' : ''}
                                         ${showResult && isCorrect && isSelected ? 'bg-green-500' : ''}
                                         ${showResult && !isCorrect && isSelected ? 'bg-red-500' : ''}
@@ -107,25 +108,25 @@ export function RecruitPanel({ speaker, text, options, correctCount, successText
                                         ${!showResult && !isSelected ? 'bg-white hover:bg-gray-50' : ''}
                                         ${showResult && !isSelected ? 'bg-white opacity-60' : ''}
                                     `}
-                                    style={{ boxShadow: isSelected ? 'none' : '4px 4px 0 #1C1C1E' }}
+                                    style={{ boxShadow: isSelected ? 'none' : '3px 3px 0 #1C1C1E' }}
                                 >
                                     <div className="relative">
-                                        <CharacterAvatar speaker={option.id} size={60} mood={isSelected ? 'excited' : 'happy'} />
+                                        <CharacterAvatar speaker={option.id} size={isMobile ? 40 : 60} mood={isSelected ? 'excited' : 'happy'} />
                                         {isSelected && !submitted && (
                                             <motion.div
                                                 initial={{ scale: 0 }}
                                                 animate={{ scale: 1 }}
-                                                className="absolute -top-2 -right-2 bg-yellow text-black rounded-full p-1 border-2 border-black"
+                                                className="absolute -top-1 -right-1 md:-top-2 md:-right-2 bg-yellow text-black rounded-full p-0.5 md:p-1 border-2 border-black"
                                             >
-                                                <Check className="w-4 h-4" strokeWidth={4} />
+                                                <Check className="w-3 h-3 md:w-4 md:h-4" strokeWidth={4} />
                                             </motion.div>
                                         )}
                                     </div>
                                     <div>
-                                        <h4 className={`font-black text-lg leading-tight ${showResult && isSelected ? 'text-white' : ''}`} style={{ color: showResult && isSelected ? undefined : accentColor }}>
+                                        <h4 className={`font-black text-sm md:text-lg leading-tight ${showResult && isSelected ? 'text-white' : ''}`} style={{ color: showResult && isSelected ? undefined : accentColor }}>
                                             {option.name}
                                         </h4>
-                                        <p className={`text-xs font-bold leading-tight mt-1 ${showResult && isSelected ? 'text-white/80' : 'text-gray-400'}`}>{option.description}</p>
+                                        <p className={`text-[10px] md:text-xs font-bold leading-tight mt-0.5 md:mt-1 ${showResult && isSelected ? 'text-white/80' : 'text-gray-400'}`}>{option.description}</p>
                                     </div>
                                 </motion.button>
                             );
