@@ -146,14 +146,14 @@ export default function ShootingGame({ instruction, onComplete, onFail, lives, a
         >
             <div
                 ref={containerRef}
-                className="relative w-full h-[500px] bg-red-50 border-4 border-black rounded-3xl overflow-hidden cursor-none shadow-[8px_8px_0_#000]"
+                className="relative w-full h-[50vh] md:h-[500px] bg-red-50 border-4 border-black rounded-3xl overflow-hidden cursor-none shadow-[8px_8px_0_#000]"
             >
                 {/* Game Stats Overlay inside the game box */}
                 <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-20 pointer-events-none">
-                    <div className="bg-white/80 backdrop-blur border-2 border-black px-4 py-2 rounded-xl font-black text-lg">
+                    <div className="bg-white/80 backdrop-blur border-2 border-black px-2 py-1 md:px-4 md:py-2 rounded-xl font-black text-sm md:text-lg">
                         SCORE: {score}/{VICTORY_SCORE}
                     </div>
-                    <div className={`bg-white/80 backdrop-blur border-2 border-black px-4 py-2 rounded-xl font-black text-lg ${timeLeft < 10 ? 'text-red-500 animate-pulse' : ''}`}>
+                    <div className={`bg-white/80 backdrop-blur border-2 border-black px-2 py-1 md:px-4 md:py-2 rounded-xl font-black text-sm md:text-lg ${timeLeft < 10 ? 'text-red-500 animate-pulse' : ''}`}>
                         TIME: {timeLeft}s
                     </div>
                 </div>
@@ -184,9 +184,9 @@ export default function ShootingGame({ instruction, onComplete, onFail, lives, a
                     ))}
                 </div>
 
-                {/* Custom Scope Cursor */}
+                {/* Custom Scope Cursor - Hidden on mobile because touch input doesn't always have hover */}
                 <div
-                    className="pointer-events-none absolute z-50 transform -translate-x-1/2 -translate-y-1/2"
+                    className="pointer-events-none absolute z-50 transform -translate-x-1/2 -translate-y-1/2 hidden md:block"
                     style={{ left: cursorPos.x, top: cursorPos.y }}
                 >
                     <div className="relative">
@@ -203,9 +203,9 @@ export default function ShootingGame({ instruction, onComplete, onFail, lives, a
                         transition={{ delay: 2, duration: 1 }}
                         className="absolute inset-0 z-40 bg-black/40 flex items-center justify-center pointer-events-none"
                     >
-                        <div className="text-center text-white bg-black/80 p-6 rounded-xl border-4 border-white transform rotate-2">
-                            <h2 className="text-4xl font-black mb-2 text-yellow-400">SHOOT INFECTED!</h2>
-                            <p className="text-xl font-bold">Avoid Friendly Cells!</p>
+                        <div className="text-center text-white bg-black/80 p-4 md:p-6 rounded-xl border-4 border-white transform rotate-2">
+                            <h2 className="text-2xl md:text-4xl font-black mb-2 text-yellow-400">SHOOT INFECTED!</h2>
+                            <p className="text-sm md:text-xl font-bold">Avoid Friendly Cells!</p>
                         </div>
                     </motion.div>
                 )}

@@ -60,7 +60,7 @@ function TopHUD({ actName, questionNumber, totalQuestions, lives, maxLives }) {
 const MemoizedMascot = React.memo(function Mascot({ mood, color, Component, reaction, bubbleText }) {
     return (
         <motion.div
-            className="fixed bottom-[-10px] right-[-10px] md:right-4 md:bottom-[-20px] z-20 pointer-events-none"
+            className="fixed bottom-[-10px] right-[-10px] md:right-4 md:bottom-[-20px] z-20 pointer-events-none origin-bottom-right transform scale-75 md:scale-100"
             animate={
                 reaction === 'happy' ? { y: [0, -20, 0] } :
                     reaction === 'sad' ? { x: [-5, 5, -5, 5, 0] } :
@@ -80,11 +80,11 @@ const MemoizedMascot = React.memo(function Mascot({ mood, color, Component, reac
                         initial={{ scale: 0, opacity: 0, y: 20, x: -50 }}
                         animate={{ scale: 1, opacity: 1, y: 0, x: -50 }}
                         exit={{ scale: 0, opacity: 0 }}
-                        className={`absolute bottom-[240px] right-[20px] border-4 border-black px-6 py-3 rounded-2xl z-30 shadow-[6px_6px_0_0_rgba(0,0,0,1)] max-w-[220px]
+                        className={`absolute bottom-[180px] md:bottom-[240px] right-[10px] md:right-[20px] border-4 border-black px-4 py-2 md:px-6 md:py-3 rounded-2xl z-30 shadow-[4px_4px_0_0_rgba(0,0,0,1)] md:shadow-[6px_6px_0_0_rgba(0,0,0,1)] max-w-[160px] md:max-w-[220px]
                             ${reaction === 'happy' ? 'bg-green-400' : reaction === 'sad' ? 'bg-red-400' : 'bg-white'}
                         `}
                     >
-                        <h2 className={`text-lg font-black italic leading-tight ${reaction === 'neutral' ? 'text-black' : 'text-white'}`}>{bubbleText}</h2>
+                        <h2 className={`text-sm md:text-lg font-black italic leading-tight ${reaction === 'neutral' ? 'text-black' : 'text-white'}`}>{bubbleText}</h2>
                         {/* Triangle pointer */}
                         <div className={`absolute -bottom-4 right-10 w-0 h-0 border-l-[15px] border-l-transparent border-t-[15px] border-r-[0px] border-r-transparent
                             ${reaction === 'happy' ? 'border-t-green-400' : reaction === 'sad' ? 'border-t-red-400' : 'border-t-black'}
@@ -177,30 +177,32 @@ export function QuestionLayout({
     const { Component, color } = MASCOT;
 
     return (
-        <div className="fixed inset-0 bg-indigo-50 overflow-hidden font-mono text-black selection:bg-yellow-300">
+        <div className="fixed inset-0 bg-indigo-50 font-mono text-black selection:bg-yellow-300 flex flex-col">
             {/* Pop Art Patterns */}
-            <div className="absolute inset-0 z-0 opacity-5 pointer-events-none"
+            <div className="fixed inset-0 z-0 opacity-5 pointer-events-none"
                 style={{ backgroundImage: 'radial-gradient(#000 3px, transparent 3px)', backgroundSize: '40px 40px' }}
             />
 
-            {/* Top HUD */}
-            <TopHUD
-                actName={actName}
-                questionNumber={questionNumber}
-                totalQuestions={totalQuestions}
-                lives={lives}
-                maxLives={maxLives}
-            />
+            {/* Top HUD - Fixed at top via flex layout */}
+            <div className="flex-none z-30">
+                <TopHUD
+                    actName={actName}
+                    questionNumber={questionNumber}
+                    totalQuestions={totalQuestions}
+                    lives={lives}
+                    maxLives={maxLives}
+                />
+            </div>
 
-            {/* Main Content Stage */}
-            <div className="relative z-10 w-full h-full flex flex-col md:flex-row items-start justify-center p-4 pt-4">
+            {/* Main Content Stage - Scrollable Area */}
+            <div className="relative z-10 flex-1 w-full overflow-y-auto overflow-x-hidden flex flex-col md:flex-row items-start justify-center p-4 pt-4">
 
                 {/* Content Container */}
-                <div className="w-full max-w-5xl relative z-10 md:mr-64 mt-4">
+                <div className="w-full max-w-5xl relative z-10 md:mr-64 mt-4 pb-32">
                     {children}
                 </div>
 
-                {/* Hero Character (Bottom-Right, smaller 220px) */}
+                {/* Hero Character (Bottom-Right) */}
                 <MemoizedMascot
                     mood={mood}
                     color={color}

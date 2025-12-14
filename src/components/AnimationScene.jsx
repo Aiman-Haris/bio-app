@@ -41,7 +41,7 @@ export default function AnimationScene({ animationName, text, onNext }) {
                 </div>
 
                 {/* Animation Stage */}
-                <div className="relative w-full h-[400px] bg-blue-50 flex items-center justify-center overflow-hidden border-b-4 border-black">
+                <div className="relative w-full h-[300px] md:h-[400px] bg-blue-50 flex items-center justify-center overflow-hidden border-b-4 border-black">
                     {/* Inner Grid */}
                     <div className="absolute inset-0 opacity-10 pointer-events-none"
                         style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }}
