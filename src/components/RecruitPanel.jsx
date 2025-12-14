@@ -60,12 +60,12 @@ export function RecruitPanel({ speaker, text, options, correctCount, successText
                     >
                         <div>
                             <div
-                                className="inline-block px-6 py-2 rounded-full font-bold text-white text-sm mb-4 border-2 border-black"
+                                className="inline-block px-4 py-1 md:px-6 md:py-2 rounded-full font-bold text-white text-xs md:text-sm mb-4 border-2 border-black"
                                 style={{ backgroundColor: characterColors[speaker] || '#00C7BE', boxShadow: '2px 2px 0 #1C1C1E' }}
                             >
                                 Recruit Cells
                             </div>
-                            <p className="text-2xl leading-relaxed text-gray-800 font-medium">{text}</p>
+                            <p className="text-xl md:text-2xl leading-relaxed text-gray-800 font-medium">{text}</p>
                         </div>
 
                         {/* Selection counter */}

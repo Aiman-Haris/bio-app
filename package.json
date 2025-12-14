@@ -19,6 +19,7 @@
     "lucide-react": "^0.556.0",
     "prop-types": "^15.8.1",
     "react": "^19.2.0",
+    "react-device-detect": "^2.2.3",
     "react-dom": "^19.2.0",
     "react-kawaii": "^1.6.0",
     "react-nice-avatar": "^1.5.0",
