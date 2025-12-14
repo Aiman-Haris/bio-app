@@ -73,6 +73,21 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
         onWrong && onWrong();
     };
 
+    // Arrow button controls for mobile
+    const moveUp = (index) => {
+        if (index === 0 || showFeedback) return;
+        const newItems = [...orderedItems];
+        [newItems[index - 1], newItems[index]] = [newItems[index], newItems[index - 1]];
+        setOrderedItems(newItems);
+    };
+
+    const moveDown = (index) => {
+        if (index === orderedItems.length - 1 || showFeedback) return;
+        const newItems = [...orderedItems];
+        [newItems[index], newItems[index + 1]] = [newItems[index + 1], newItems[index]];
+        setOrderedItems(newItems);
+    };
+
     return (
         <QuestionLayout
             actName={actName}
@@ -96,7 +111,13 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
                             Put in Order
                         </div>
                         <p className="text-lg md:text-xl leading-relaxed text-black font-medium">{instruction}</p>
-                        <p className="mt-2 md:mt-4 text-black/50 font-bold text-xs md:text-sm uppercase tracking-wider flex items-center gap-2">
+                        {/* Mobile instruction */}
+                        <p className="mt-2 md:mt-4 text-black/50 font-bold text-xs md:text-sm uppercase tracking-wider flex items-center gap-2 md:hidden">
+                            <span className="w-6 h-6 rounded-full border-2 border-black/20 flex items-center justify-center bg-black/5 text-xs">↕</span>
+                            Use arrows to reorder
+                        </p>
+                        {/* Desktop instruction */}
+                        <p className="mt-2 md:mt-4 text-black/50 font-bold text-xs md:text-sm uppercase tracking-wider md:flex items-center gap-2 hidden">
                             <span className="w-6 h-6 rounded-full border-2 border-black/20 flex items-center justify-center bg-black/5 text-xs">↕</span>
                             Drag items to reorder
                         </p>
@@ -127,7 +148,29 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
                                         {index + 1}
                                     </span>
                                     <span className="flex-1 text-black leading-tight">{item.text}</span>
-                                    <GripVertical className="w-6 h-6 md:w-5 md:h-5 text-gray-400 flex-none" />
+
+                                    {/* Mobile: Arrow buttons */}
+                                    {!showFeedback && (
+                                        <div className="flex flex-col gap-1 md:hidden">
+                                            <button
+                                                onClick={() => moveUp(index)}
+                                                disabled={index === 0}
+                                                className={`w-8 h-8 flex items-center justify-center bg-blue-500 text-white rounded-lg border-2 border-black font-black text-lg ${index === 0 ? 'opacity-30' : 'active:bg-blue-600'}`}
+                                            >
+                                                ↑
+                                            </button>
+                                            <button
+                                                onClick={() => moveDown(index)}
+                                                disabled={index === orderedItems.length - 1}
+                                                className={`w-8 h-8 flex items-center justify-center bg-blue-500 text-white rounded-lg border-2 border-black font-black text-lg ${index === orderedItems.length - 1 ? 'opacity-30' : 'active:bg-blue-600'}`}
+                                            >
+                                                ↓
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {/* Desktop: Drag handle */}
+                                    <GripVertical className="hidden md:block w-5 h-5 text-gray-400 flex-none" />
                                 </Reorder.Item>
                             ))}
                         </Reorder.Group>
