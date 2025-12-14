@@ -140,28 +140,28 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="mt-6 text-center"
+                            className="mt-4 md:mt-6 text-center"
                         >
                             <div
-                                className={`inline-block px-8 py-4 rounded-3xl border-4 border-black ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`}
-                                style={{ boxShadow: '6px 6px 0 #1C1C1E' }}
+                                className={`inline-block px-4 py-3 md:px-8 md:py-4 rounded-3xl border-4 border-black ${isCorrect ? 'bg-green-500' : 'bg-red-500'}`}
+                                style={{ boxShadow: '4px 4px 0 #1C1C1E' }}
                             >
-                                <p className="text-2xl font-black text-white mb-2">
+                                <p className="text-lg md:text-2xl font-black text-white mb-2">
                                     {isCorrect ? 'Correct!' : 'Wrong Order!'}
                                 </p>
-                                <div className="flex gap-4 justify-center">
+                                <div className="flex gap-2 md:gap-4 justify-center flex-wrap">
                                     {!isCorrect && lives > 1 && (
-                                        <button onClick={handleRetry} className="btn-pop bg-white text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                        <button onClick={handleRetry} className="btn-pop bg-white text-black text-sm md:text-base px-4 py-2 md:px-6 md:py-2 rounded-xl border-2 border-black">
                                             Try Again
                                         </button>
                                     )}
                                     {!isCorrect && lives <= 1 && (
-                                        <button onClick={() => onWrong && onWrong()} className="btn-pop bg-white text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                        <button onClick={() => onWrong && onWrong()} className="btn-pop bg-white text-black text-sm md:text-base px-4 py-2 md:px-6 md:py-2 rounded-xl border-2 border-black">
                                             Continue
                                         </button>
                                     )}
                                     {isCorrect && (
-                                        <button onClick={handleContinue} className="btn-pop bg-yellow-400 text-black text-base px-6 py-2 rounded-xl border-2 border-black">
+                                        <button onClick={handleContinue} className="btn-pop bg-yellow-400 text-black text-sm md:text-base px-4 py-2 md:px-6 md:py-2 rounded-xl border-2 border-black">
                                             Continue
                                         </button>
                                     )}
