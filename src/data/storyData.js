@@ -294,7 +294,7 @@ export const storyData = {
                 { id: 's5', text: 'Cytotoxic T activates' },
             ],
             correctOrder: ['s1', 's2', 's3', 's6', 's4', 's5'],
-            next: 'cm_20_ready',
+            next: 'cm_21', // Go to Q10, skip ready screen
         },
         // Transition Quote/Ready
         {
@@ -433,19 +433,15 @@ export const storyData = {
             text: "The APC/Macrophage processes and presents the antigen fragments.",
             next: 'hm_2',
         },
-        // Q2: Which MHC class?
+        // Q2: Which MHC class? (Fill in the blank)
         {
             id: 'hm_2',
-            type: 'choice',
+            type: 'fill_blank',
             background: 'bloodstream',
             speaker: 'doctor',
-            text: "Which MHC does the APCs use to present the antigen fragments on its surface?",
-            choices: [
-                { id: 'c1', text: 'Class II MHC', correct: true },
-                { id: 'w1', text: 'Class I MHC', correct: false },
-                { id: 'w2', text: 'Class III MHC', correct: false },
-                { id: 'w3', text: 'Class IV MHC', correct: false },
-            ],
+            text: "APCs present antigen fragments on Class ___ MHC molecules.",
+            answer: 'II',
+            hint: 'A Roman numeral (hint: not I, not III)',
             next: 'hm_2_anim',
         },
         {
@@ -464,8 +460,8 @@ export const storyData = {
             speaker: 'doctor',
             text: "Which cell binds to the class II MHC complex on APCs?",
             choices: [
-                { id: 'c1', text: 'Helper T cell', correct: true },
                 { id: 'w1', text: 'B cell', correct: false },
+                { id: 'c1', text: 'Helper T cell', correct: true },
                 { id: 'w2', text: 'Natural Killer cell', correct: false },
             ],
             next: 'hm_3_anim',
@@ -476,6 +472,14 @@ export const storyData = {
             background: 'bloodstream',
             animationName: 'binding',
             text: "The Helper T Cell binds to the MHC-Antigen complex on the APC.",
+            next: 'hm_3_shoot',
+        },
+        // Shooting Game: Eliminate pathogens
+        {
+            id: 'hm_3_shoot',
+            type: 'shooting_game',
+            background: 'bloodstream',
+            instruction: "Eliminate infected cells (RED) only!",
             next: 'hm_4',
         },
         // Q4: Which signal does APC release?
@@ -486,10 +490,10 @@ export const storyData = {
             speaker: 'macrophage',
             text: "Which signal does the APC release to activate Helper T cells?",
             choices: [
-                { id: 'c1', text: 'Interleukin-1 (IL-1)', correct: true },
                 { id: 'w1', text: 'Interleukin-2 (IL-2)', correct: false },
                 { id: 'w2', text: 'Dopamine', correct: false },
                 { id: 'w3', text: 'Acetylcholine', correct: false },
+                { id: 'c1', text: 'Interleukin-1 (IL-1)', correct: true },
             ],
             next: 'hm_5',
         },
@@ -501,10 +505,10 @@ export const storyData = {
             speaker: 'doctor',
             text: "Which accessory receptor is involved in this binding?",
             choices: [
-                { id: 'c1', text: 'CD4', correct: true },
                 { id: 'w1', text: 'CD8', correct: false },
                 { id: 'w2', text: 'Interleukin-1', correct: false },
                 { id: 'w3', text: 'CD16', correct: false },
+                { id: 'c1', text: 'CD4', correct: true },
             ],
             next: 'hm_5_anim',
         },
@@ -545,6 +549,24 @@ export const storyData = {
             background: 'bloodstream',
             animationName: 'b_cell_binding',
             text: "Meanwhile, the pathogen binds to receptors on B cells. The B cell takes up some antigen through endocytosis and presents the antigen-MHC II complex on its surface.",
+            next: 'hm_6_ordering',
+        },
+        // Ordering: B cell activation sequence
+        {
+            id: 'hm_6_ordering',
+            type: 'ordering',
+            background: 'bloodstream',
+            speaker: 'doctor',
+            text: "Put the B cell activation steps in the correct order:",
+            items: [
+                { id: 'b1', text: 'Pathogen binds to B cell receptor' },
+                { id: 'b2', text: 'B cell presents antigen on MHC II' },
+                { id: 'b3', text: 'Helper T binds to B cell with CD4' },
+                { id: 'b4', text: 'Helper T releases IL-2' },
+                { id: 'b5', text: 'B cell activates and proliferates' },
+                { id: 'b6', text: 'Differentiates into plasma and memory B cells' },
+            ],
+            correctOrder: ['b1', 'b2', 'b3', 'b4', 'b5', 'b6'],
             next: 'hm_7',
         },
         // Q7: Accessory protein for B cell binding
@@ -555,9 +577,9 @@ export const storyData = {
             speaker: 'helperT',
             text: "Activated helper T cell binds to antigen-MHC complex on B cell with the help of which accessory protein?",
             choices: [
-                { id: 'c1', text: 'CD4', correct: true },
                 { id: 'w1', text: 'CD8', correct: false },
                 { id: 'w2', text: 'CD6', correct: false },
+                { id: 'c1', text: 'CD4', correct: true },
                 { id: 'w3', text: 'CD16', correct: false },
             ],
             next: 'hm_7_anim',
@@ -578,8 +600,8 @@ export const storyData = {
             speaker: 'helperT',
             text: "The activated helper T cells then release which cytokines?",
             choices: [
-                { id: 'c1', text: 'IL-2', correct: true },
                 { id: 'w1', text: 'IL-1', correct: false },
+                { id: 'c1', text: 'IL-2', correct: true },
                 { id: 'w2', text: 'IL-3', correct: false },
                 { id: 'w3', text: 'IL-4', correct: false },
             ],
@@ -601,10 +623,10 @@ export const storyData = {
             speaker: 'doctor',
             text: "IL-2 activates which cells?",
             choices: [
-                { id: 'c1', text: 'B cells', correct: true },
                 { id: 'w1', text: 'Cytotoxic T cells', correct: false },
                 { id: 'w2', text: 'RBCs', correct: false },
                 { id: 'w3', text: 'Antigen-presenting cells', correct: false },
+                { id: 'c1', text: 'B cells', correct: true },
             ],
             next: 'hm_10',
         },
@@ -616,8 +638,8 @@ export const storyData = {
             speaker: 'doctor',
             text: "What happens to the activated B cells?",
             choices: [
-                { id: 'c1', text: 'Proliferates and differentiates into plasma cell and memory B cell', correct: true },
                 { id: 'w1', text: 'Proliferates and differentiates into clones of antibodies and memory cytotoxic T cell', correct: false },
+                { id: 'c1', text: 'Proliferates and differentiates into plasma cell and memory B cell', correct: true },
                 { id: 'w2', text: 'Proliferates and differentiates into clones of B cells and memory cytotoxic T cell', correct: false },
                 { id: 'w3', text: 'Proliferates and differentiates into clones of helper T cell and memory helper T cell', correct: false },
             ],
@@ -639,9 +661,9 @@ export const storyData = {
             speaker: 'doctor',
             text: "Plasma cell produces which protein?",
             choices: [
-                { id: 'c1', text: 'Antibodies', correct: true },
                 { id: 'w1', text: 'Antigen', correct: false },
                 { id: 'w2', text: 'Pathogens', correct: false },
+                { id: 'c1', text: 'Antibodies', correct: true },
                 { id: 'w3', text: 'Epitopes', correct: false },
             ],
             next: 'hm_11_anim',

@@ -31,6 +31,7 @@ export default function ShootingGame({ instruction, onComplete, onFail, lives, a
                         setTimeout(onComplete, 2000);
                     } else {
                         setGameState('lost'); // Time ran out
+                        if (onFail) onFail(); // Deduct life
                     }
                     return 0;
                 }
@@ -38,7 +39,7 @@ export default function ShootingGame({ instruction, onComplete, onFail, lives, a
             });
         }, 1000);
         return () => clearInterval(timer);
-    }, [gameState, score, onComplete]);
+    }, [gameState, score, onComplete, onFail]);
 
     // Spawner
     useEffect(() => {
@@ -84,7 +85,7 @@ export default function ShootingGame({ instruction, onComplete, onFail, lives, a
     }, [lives]);
 
     const createTarget = (id) => {
-        const isInfected = Math.random() > 0.4; // 60% chance infected
+        const isInfected = Math.random() > 0.3; // 70% chance infected (increased from 60%)
         return {
             id,
             isInfected,
@@ -208,6 +209,29 @@ export default function ShootingGame({ instruction, onComplete, onFail, lives, a
                             <p className="text-sm md:text-xl font-bold">Avoid Friendly Cells!</p>
                         </div>
                     </motion.div>
+                )}
+
+                {/* Game Over Overlay - Lost State */}
+                {gameState === 'lost' && (
+                    <div className="absolute inset-0 z-50 bg-black/60 flex items-center justify-center">
+                        <div className="bg-red-500 border-4 border-black p-6 md:p-8 rounded-3xl text-center shadow-[8px_8px_0_#000]">
+                            <h2 className="text-3xl md:text-4xl font-black text-white mb-2">TIME'S UP!</h2>
+                            <p className="text-lg md:text-xl text-white font-bold mb-4">Score: {score}/{VICTORY_SCORE}</p>
+                            <p className="text-base md:text-lg text-white font-bold mb-4">Lives Left: {lives}</p>
+                            <button
+                                onClick={() => {
+                                    // Reset game state
+                                    setGameState('playing');
+                                    setScore(0);
+                                    setTimeLeft(GAME_DURATION);
+                                    setTargets([]);
+                                }}
+                                className="bg-yellow-400 text-black px-6 py-3 text-lg font-black border-4 border-black rounded-xl shadow-[4px_4px_0_#000] hover:translate-y-1 hover:shadow-none transition-all"
+                            >
+                                TRY AGAIN
+                            </button>
+                        </div>
+                    </div>
                 )}
             </div>
 

@@ -1,7 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
 import Button from './Button';
-import { CharacterAvatar } from './Characters';
 
 export default function CertificateView({ title, description, onRestart }) {
     const [name, setName] = useState('');
@@ -13,82 +11,79 @@ export default function CertificateView({ title, description, onRestart }) {
 
     if (!showCert) {
         return (
-            <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-8 text-white">
-                <h1 className="text-4xl font-bold mb-8">Mission Accomplished!</h1>
-                <p className="mb-8 text-xl text-center max-w-lg">
-                    You have successfully defended Ivan from the infection.
-                    Please enter your name to receive your commendation.
-                </p>
-                <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Enter your name"
-                    className="px-6 py-3 rounded-lg text-black text-xl mb-8 w-full max-w-md focus:ring-4 ring-blue-500 outline-none"
-                />
-                <Button
-                    onClick={() => { if (name.trim()) setShowCert(true); }}
-                    disabled={!name.trim()}
-                    className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-full text-xl disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                    Generate Certificate
-                </Button>
+            <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4 md:p-8">
+                <div className="max-w-md w-full border-4 border-black rounded-2xl p-8 shadow-lg">
+                    <h1 className="text-3xl md:text-4xl font-black mb-4 text-center text-black">Mission Accomplished!</h1>
+                    <p className="mb-6 text-lg text-center text-gray-700">
+                        Enter your name to receive your certificate.
+                    </p>
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="Enter your name"
+                        className="w-full px-4 py-3 rounded-lg text-black text-lg mb-6 border-2 border-gray-300 font-medium focus:ring-2 ring-blue-500 outline-none"
+                    />
+                    <Button
+                        onClick={() => { if (name.trim()) setShowCert(true); }}
+                        disabled={!name.trim()}
+                        className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 rounded-lg text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        Generate Certificate
+                    </Button>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center p-8 print:p-0 print:bg-white">
-            <div className="max-w-4xl w-full bg-white text-black p-12 border-[20px] border-double border-yellow-600 rounded-lg shadow-2xl relative overflow-hidden print:shadow-none print:border-8">
+        <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4 md:p-8 print:p-0">
+            <div className="max-w-4xl w-full bg-yellow-50 text-black p-12 md:p-16 border-8 border-double border-gray-800 print:border-4">
+                <div className="text-center">
+                    {/* Certificate Header */}
+                    <h1 className="text-5xl md:text-6xl font-serif font-bold text-gray-800 mb-2">
+                        Certificate
+                    </h1>
+                    <h2 className="text-xl md:text-2xl text-gray-600 mb-12 uppercase tracking-widest">
+                        of Completion
+                    </h2>
 
-                {/* Decorative corner */}
-                <div className="absolute top-0 left-0 w-32 h-32 border-b-[40px] border-r-[40px] border-yellow-600 rounded-br-full -translate-x-16 -translate-y-16 opacity-50"></div>
-                <div className="absolute bottom-0 right-0 w-32 h-32 border-t-[40px] border-l-[40px] border-yellow-600 rounded-tl-full translate-x-16 translate-y-16 opacity-50"></div>
+                    <p className="text-lg md:text-xl text-gray-700 mb-8">This certifies that</p>
 
-                <div className="text-center relative z-10">
-                    <div className="mb-4">
-                        <CharacterAvatar speaker="doctor" size={100} mood="happy" />
-                    </div>
-
-                    <h1 className="text-6xl font-serif font-bold text-yellow-700 mb-2 font-display uppercase tracking-widest">Certificate</h1>
-                    <h2 className="text-2xl font-serif text-gray-500 mb-8 uppercase tracking-widest">of Completion</h2>
-
-                    <p className="text-xl text-gray-700 italic mb-8">This certifies that</p>
-
-                    <div className="text-5xl font-script font-bold text-blue-800 mb-8 border-b-2 border-gray-300 inline-block px-12 pb-2">
+                    {/* Name */}
+                    <div className="text-4xl md:text-5xl font-serif text-black mb-12 border-b-2 border-gray-400 inline-block px-12 pb-3">
                         {name}
                     </div>
 
-                    <p className="text-xl text-gray-700 mb-6">
-                        Has successfully completed the training module:
+                    <p className="text-lg md:text-xl text-gray-700 mb-6">
+                        Has successfully completed
                     </p>
 
-                    <h3 className="text-3xl font-bold text-gray-900 mb-8">{title}</h3>
+                    {/* Title */}
+                    <h3 className="text-2xl md:text-3xl font-bold text-black mb-8">
+                        {title}
+                    </h3>
 
-                    <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed mb-12">
+                    {/* Description */}
+                    <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed mb-16">
                         {description}
                     </p>
-
-                    <div className="flex justify-between items-end mt-12 px-12">
-                        <div className="text-center">
-                            <div className="font-script text-2xl text-blue-600 mb-2">Dr. Sarah Chen</div>
-                            <div className="border-t border-gray-400 w-48 mx-auto pt-2 text-sm text-gray-500 uppercase">Chief Immunologist</div>
-                        </div>
-
-                        <div className="text-center">
-                            <div className="text-yellow-600">★★★★★</div>
-                            <div className="border-t border-gray-400 w-48 mx-auto pt-2 text-sm text-gray-500 uppercase">Class S Defender</div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
+            {/* Buttons - Hidden when printing */}
             <div className="mt-8 flex gap-4 print:hidden">
-                <Button onClick={handlePrint} className="bg-blue-600 text-white px-8 py-3 rounded-lg shadow-lg">
-                    🖨️ Print Certificate
+                <Button
+                    onClick={handlePrint}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-bold"
+                >
+                    Print Certificate
                 </Button>
-                <Button onClick={onRestart} className="bg-gray-800 text-white px-8 py-3 rounded-lg shadow-lg">
-                    🔄 Play Again
+                <Button
+                    onClick={onRestart}
+                    className="bg-gray-800 hover:bg-gray-900 text-white px-8 py-3 rounded-lg font-bold"
+                >
+                    Play Again
                 </Button>
             </div>
         </div>

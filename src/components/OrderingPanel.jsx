@@ -24,13 +24,24 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
         return item;
     }), [items]);
 
-    // Normalize correctOrder similarly
-    const normalizedCorrectOrder = useMemo(() => correctOrder ? correctOrder.map((item, idx) => {
-        if (typeof item === 'string') {
-            return { id: `item-${idx}`, text: item };
-        }
-        return item;
-    }) : normalizedItems, [correctOrder, normalizedItems]);
+    // Normalize correctOrder - handle ID references
+    const normalizedCorrectOrder = useMemo(() => {
+        if (!correctOrder) return normalizedItems;
+
+        // If correctOrder contains strings, treat them as IDs to look up in items
+        return correctOrder.map((orderItem) => {
+            if (typeof orderItem === 'string') {
+                // Look for an item with this ID in normalizedItems
+                const foundItem = normalizedItems.find(item => item.id === orderItem);
+                if (foundItem) {
+                    return foundItem;
+                }
+                // Fallback: treat as text
+                return { id: orderItem, text: orderItem };
+            }
+            return orderItem;
+        });
+    }, [correctOrder, normalizedItems]);
 
     // Shuffle items initially so they don't appear in correct order
     const [orderedItems, setOrderedItems] = useState(() => shuffleArray(normalizedItems));
@@ -40,10 +51,10 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
     const accentColor = characterColors[speaker] || '#007AFF';
 
     const handleCheck = () => {
-        // Compare by text or id
+        // Compare by ID (primary) or text (fallback)
         const correct = orderedItems.every((item, index) => {
             const correctItem = normalizedCorrectOrder[index];
-            return item.text === correctItem.text || item.id === correctItem.id;
+            return item.id === correctItem.id || item.text === correctItem.text;
         });
         setIsCorrect(correct);
         setShowFeedback(true);
