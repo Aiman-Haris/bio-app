@@ -12,7 +12,33 @@ import {
     CellAvatar
 } from './Characters';
 import { ChevronRight } from 'lucide-react';
-i// Inline Human Dialogue - Responsive & Themed
+// Big full-height portrait for humans
+function HumanPortrait({ type, mood = 'happy', isActive = false }) {
+    const configs = humanConfigs[type];
+    if (!configs) return null;
+
+    const config = configs[mood] || configs.happy;
+
+    return (
+        <motion.div
+            animate={{ opacity: isActive ? 1 : 0.4 }}
+            transition={{ duration: 0.3 }}
+            className="h-full flex items-end justify-center"
+            style={{
+                width: 280,
+                backgroundColor: config.bgColor || '#f0f0f0',
+            }}
+        >
+            <NiceAvatar
+                style={{ width: 350, height: 350 }}
+                shape="square"
+                {...config}
+            />
+        </motion.div>
+    );
+}
+
+// Human dialogue with BIG side portraits - also used for narration
 function HumanDialogue({ speaker, text, onContinue, mood, isNarration = false, image }) {
     const name = isNarration ? 'Narrator' : characterNames[speaker];
     const accentColor = isNarration ? '#FFCC00' : characterColors[speaker];
@@ -21,64 +47,105 @@ function HumanDialogue({ speaker, text, onContinue, mood, isNarration = false, i
     const ivanActive = speaker === 'ivan';
     const doctorActive = speaker === 'doctor';
 
-    // Desktop Layout: Side-by-Side
+    // DESKTOP LAYOUT (Original Fixed Split)
     if (!isMobile) {
         return (
-            <div className="flex flex-row items-stretch justify-center h-[500px] w-full gap-8">
-                {/* Ivan (Left) */}
-                <div className={`
-                    w-48 flex flex-col justify-end items-center transition-opacity duration-300
-                    ${ivanActive ? 'opacity-100 scale-105' : 'opacity-50 scale-95'}
-                `}>
-                    <div className="border-4 border-black bg-blue-100 w-full h-full rounded-2xl overflow-hidden flex items-end justify-center shadow-[4px_4px_0_#1C1C1E]">
-                        <NiceAvatar style={{ width: '100%', height: '100%' }} shape="square" {...humanConfigs.ivan[ivanActive ? mood : 'happy']} />
-                    </div>
+            <div className="fixed inset-0 flex z-50">
+                {/* Ivan on left - full height */}
+                <div className="h-full border-r-4 border-black overflow-hidden relative hidden md:block">
+                    <HumanPortrait
+                        type="ivan"
+                        mood={ivanActive ? mood : 'happy'}
+                        isActive={ivanActive}
+                    />
                 </div>
 
-                {/* Center Text */}
-                <div className="flex-1 flex flex-col justify-center items-center z-10">
-                    <div className="bg-white border-4 border-black p-8 rounded-3xl w-full shadow-[8px_8px_0_#1C1C1E] relative">
-                        {/* Name Tag */}
-                        <div className="absolute -top-5 left-8 px-6 py-2 border-4 border-black rounded-full font-black text-xl text-white shadow-[2px_2px_0_#000]"
-                            style={{ backgroundColor: accentColor }}>
-                            {name}
-                        </div>
+                {/* Dialogue/Narration in center */}
+                <div className="flex-1 flex items-center justify-center p-8 bg-gradient-to-b from-teal to-green">
+                    <div className="w-full max-w-xl flex flex-col items-center">
 
+                        {/* Optional Image Display */}
                         {image && (
-                            <div className="bg-gray-100 border-2 border-black rounded-xl mb-4 h-40 flex items-center justify-center overflow-hidden">
-                                {image === 'raw_meat_zoom' ?
-                                    <img src="/raw_meat_zoom.png" className="w-full h-full object-cover" /> :
-                                    <span className="text-4xl">{image}</span>
-                                }
-                            </div>
+                            <motion.div
+                                initial={{ scale: 0.8, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                className="mb-4 rounded-xl border-4 border-black overflow-hidden shadow-card w-64 h-48 bg-white"
+                            >
+                                {image === 'raw_meat_zoom' ? (
+                                    <img
+                                        src="/raw_meat_zoom.png"
+                                        alt="Raw Meat Zoom"
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <div className="w-full h-full bg-gray-200 flex items-center justify-center text-4xl">
+                                        {image}
+                                    </div>
+                                )}
+                            </motion.div>
                         )}
 
-                        <p className={`text-2xl font-bold text-gray-800 leading-relaxed ${isNarration ? 'italic text-center' : ''}`}>
-                            {isNarration ? `"${text}"` : text}
-                        </p>
+                        {/* Text box */}
+                        <div
+                            className="relative bg-white rounded-2xl border-4 border-black p-8 w-full"
+                            style={{ boxShadow: '8px 8px 0 #1C1C1E' }}
+                        >
+                            {/* Name tag */}
+                            <motion.div
+                                key={name}
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="absolute -top-6 left-6 px-6 py-2 rounded-full font-bold text-lg border-4 border-black"
+                                style={{
+                                    backgroundColor: accentColor,
+                                    color: isNarration ? '#1C1C1E' : 'white',
+                                    boxShadow: '4px 4px 0 #1C1C1E'
+                                }}
+                            >
+                                {name}
+                            </motion.div>
 
-                        <div className="flex justify-end mt-6">
-                            <button onClick={onContinue} className="btn-pop bg-yellow-400 text-black px-8 py-3 rounded-xl border-4 border-black font-black flex items-center gap-2 hover:translate-y-1 hover:shadow-none transition-all shadow-[4px_4px_0_#000]">
-                                CONTINUE <ChevronRight className="w-6 h-6" strokeWidth={3} />
-                            </button>
+                            {/* Dialogue text */}
+                            <AnimatePresence mode="wait">
+                                <motion.p
+                                    key={text}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className={`text-xl leading-relaxed text-gray-800 mt-4 ${isNarration ? 'italic text-center' : ''}`}
+                                >
+                                    {isNarration ? `"${text}"` : text}
+                                </motion.p>
+                            </AnimatePresence>
+
+                            {/* Continue button */}
+                            <div className="flex justify-end mt-6">
+                                <button
+                                    onClick={onContinue}
+                                    className="btn-pop bg-yellow text-black flex items-center gap-2"
+                                >
+                                    Continue
+                                    <ChevronRight className="w-5 h-5" />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Doctor (Right) */}
-                <div className={`
-                    w-48 flex flex-col justify-end items-center transition-opacity duration-300
-                    ${doctorActive ? 'opacity-100 scale-105' : 'opacity-50 scale-95'}
-                `}>
-                    <div className="border-4 border-black bg-teal-100 w-full h-full rounded-2xl overflow-hidden flex items-end justify-center shadow-[4px_4px_0_#1C1C1E]">
-                        <NiceAvatar style={{ width: '100%', height: '100%' }} shape="square" {...humanConfigs.doctor[doctorActive ? mood : 'happy']} />
-                    </div>
+                {/* Doctor on right - full height */}
+                <div className="h-full border-l-4 border-black overflow-hidden hidden md:block">
+                    <HumanPortrait
+                        type="doctor"
+                        mood={doctorActive ? mood : 'happy'}
+                        isActive={doctorActive}
+                    />
                 </div>
             </div>
         );
     }
 
-    // Mobile Layout: Stacked (Ivan Top, Text Middle, Doctor Bottom)
+    // MOBILE LAYOUT (Stacked: Ivan Top, Text Middle, Doctor Bottom)
     return (
         <div className="flex flex-col w-full min-h-[60vh] gap-4 py-2">
             {/* Top: Ivan */}
@@ -96,7 +163,7 @@ function HumanDialogue({ speaker, text, onContinue, mood, isNarration = false, i
             {/* Middle: Dialogue Box */}
             <div className="flex-1 flex flex-col justify-center">
                 <div className="bg-white border-4 border-black p-5 rounded-2xl shadow-[6px_6px_0_#1C1C1E] relative">
-                    {/* Speaker Name Tag (if strictly needed on box, but we have visual context) */}
+                    {/* Speaker Name Tag */}
                     <div className="absolute -top-3 left-4 px-3 py-1 border-2 border-black rounded-full font-bold text-xs text-white"
                         style={{ backgroundColor: accentColor }}>
                         {name}
