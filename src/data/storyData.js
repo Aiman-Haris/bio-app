@@ -110,7 +110,7 @@ export const storyData = {
             options: [
                 { id: 'macrophage', name: 'Macrophage', correct: true },
                 { id: 'dendritic', name: 'Dendritic Cell', correct: true },
-                { id: 'phagocyte', name: 'Phag ocyte', correct: true },
+                { id: 'phagocyte', name: 'Phagocyte', correct: true },
                 { id: 'pathogen', name: 'Pathogen', correct: false },
             ],
             correctCount: 3,
@@ -126,15 +126,6 @@ export const storyData = {
             text: "After macrophage engulfs the pathogen, what will it do? It degrades the pathogens into _____ fragments.",
             answer: 'antigen',
             hint: 'A substance that induces an immune response',
-            next: 'cm_4_game',
-        },
-        // Ready Screen removed as requested
-        // Mini-Game 1: Shooting
-        {
-            id: 'cm_4_game',
-            type: 'shooting_game',
-            background: 'bloodstream',
-            instruction: "Eliminate infected cells (RED) only!",
             next: 'cm_5_anim',
         },
         // Animation 1
@@ -356,21 +347,30 @@ export const storyData = {
                 { id: 'c1', text: 'Perforin and granzymes', correct: true },
                 { id: 'w3', text: 'Perforin and granzyme C', correct: false },
             ],
+            next: 'cm_25_game',
+        },
+        // Shooting Game: Eliminate infected cells
+        {
+            id: 'cm_25_game',
+            type: 'shooting_game',
+            background: 'bloodstream',
+            instruction: "Eliminate infected cells (RED) only!",
             next: 'cm_27',
         },
-        // Q13: MCQ
+        // Q13: Ordering - Perforin sequence
         {
             id: 'cm_27',
-            type: 'choice',
+            type: 'ordering',
             background: 'bloodstream',
             speaker: 'doctor',
-            text: "What does perforin do?",
-            choices: [
-                { id: 'w1', text: 'Creates pores in the infected cell membrane', correct: false },
-                { id: 'c1', text: 'Causes cell lysis or apoptosis', correct: true },
-                { id: 'w2', text: 'Causes water and ions to enter the cell', correct: false },
-                { id: 'w3', text: 'Cytolysis', correct: false },
+            text: "Put the steps of how perforin works in the correct order:",
+            items: [
+                { id: 'p1', text: 'Creates pores in the infected cell membrane' },
+                { id: 'p2', text: 'Causes water and ions to enter the cell' },
+                { id: 'p3', text: 'Causes cell lysis or apoptosis' },
+                { id: 'p4', text: 'Cytolysis' },
             ],
+            correctOrder: ['p1', 'p2', 'p3', 'p4'],
             next: 'cm_28_anim',
         },
         // Animation 6: Finale Lysis
@@ -472,14 +472,6 @@ export const storyData = {
             background: 'bloodstream',
             animationName: 'binding',
             text: "The Helper T Cell binds to the MHC-Antigen complex on the APC.",
-            next: 'hm_3_shoot',
-        },
-        // Shooting Game: Eliminate pathogens
-        {
-            id: 'hm_3_shoot',
-            type: 'shooting_game',
-            background: 'bloodstream',
-            instruction: "Eliminate infected cells (RED) only!",
             next: 'hm_4',
         },
         // Q4: Which signal does APC release?
@@ -549,24 +541,6 @@ export const storyData = {
             background: 'bloodstream',
             animationName: 'b_cell_binding',
             text: "Meanwhile, the pathogen binds to receptors on B cells. The B cell takes up some antigen through endocytosis and presents the antigen-MHC II complex on its surface.",
-            next: 'hm_6_ordering',
-        },
-        // Ordering: B cell activation sequence
-        {
-            id: 'hm_6_ordering',
-            type: 'ordering',
-            background: 'bloodstream',
-            speaker: 'doctor',
-            text: "Put the B cell activation steps in the correct order:",
-            items: [
-                { id: 'b1', text: 'Pathogen binds to B cell receptor' },
-                { id: 'b2', text: 'B cell presents antigen on MHC II' },
-                { id: 'b3', text: 'Helper T binds to B cell with CD4' },
-                { id: 'b4', text: 'Helper T releases IL-2' },
-                { id: 'b5', text: 'B cell activates and proliferates' },
-                { id: 'b6', text: 'Differentiates into plasma and memory B cells' },
-            ],
-            correctOrder: ['b1', 'b2', 'b3', 'b4', 'b5', 'b6'],
             next: 'hm_7',
         },
         // Q7: Accessory protein for B cell binding
@@ -651,6 +625,24 @@ export const storyData = {
             background: 'bloodstream',
             animationName: 'proliferate_b_cell',
             text: "The activated B Cell proliferates and differentiates into Plasma cells and Memory B cells.",
+            next: 'hm_10_ordering',
+        },
+        // Ordering: B cell activation sequence
+        {
+            id: 'hm_10_ordering',
+            type: 'ordering',
+            background: 'bloodstream',
+            speaker: 'doctor',
+            text: "Put the B cell activation steps in the correct order:",
+            items: [
+                { id: 'b1', text: 'Pathogen binds to B cell receptor' },
+                { id: 'b2', text: 'B cell presents antigen on MHC II' },
+                { id: 'b3', text: 'Helper T binds to B cell with CD4' },
+                { id: 'b4', text: 'Helper T releases IL-2' },
+                { id: 'b5', text: 'B cell activates and proliferates' },
+                { id: 'b6', text: 'Differentiates into plasma and memory B cells' },
+            ],
+            correctOrder: ['b1', 'b2', 'b3', 'b4', 'b5', 'b6'],
             next: 'hm_11',
         },
         // Q11: What does plasma cell produce?

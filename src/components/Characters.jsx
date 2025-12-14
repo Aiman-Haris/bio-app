@@ -51,17 +51,15 @@ export const humanConfigs = {
 };
 
 // Cell characters using react-kawaii (they already have mood support)
-// Added Icon property for visual differentiation of the Ghost shapes
-// Cell characters using react-kawaii (they already have mood support)
-// Added Icon property for visual differentiation of the Ghost shapes
+// Color alone differentiates each character
 export const cellCharacters = {
-    macrophage: { component: Ghost, color: '#FF9500', Icon: Activity },
-    dendritic: { component: Ghost, color: '#FF2D55', Icon: Activity },
-    helperT: { component: Ghost, color: '#34C759' }, // Helper T is default/standard
-    cytotoxicT: { component: Ghost, color: '#FF3B30', Icon: Swords },
-    bCell: { component: Ghost, color: '#007AFF', Icon: Shield },
-    pathogen: { component: Planet, color: '#FF3B30' }, // Red color to stand out
-    phagocyte: { component: Ghost, color: '#00C7BE', Icon: Activity },
+    macrophage: { component: Ghost, color: '#FF9500' },
+    dendritic: { component: Ghost, color: '#FF2D55' },
+    helperT: { component: Ghost, color: '#34C759' },
+    cytotoxicT: { component: Ghost, color: '#FF3B30' },
+    bCell: { component: Ghost, color: '#007AFF' },
+    pathogen: { component: Planet, color: '#FF3B30' },
+    phagocyte: { component: Ghost, color: '#00C7BE' },
 };
 
 // Character display names

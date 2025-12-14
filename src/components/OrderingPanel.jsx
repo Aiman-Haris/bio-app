@@ -117,15 +117,17 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
                                 <Reorder.Item
                                     key={item.id}
                                     value={item}
-                                    className="flex items-center gap-2 md:gap-3 p-3 md:p-4 bg-white rounded-xl border-4 border-black cursor-grab active:cursor-grabbing font-bold text-sm md:text-base"
+                                    className="flex items-center gap-2 md:gap-3 p-4 md:p-4 bg-white rounded-xl border-4 border-black cursor-grab active:cursor-grabbing font-bold text-sm md:text-base touch-none"
                                     style={{ boxShadow: '3px 3px 0 #1C1C1E' }}
-                                    whileDrag={{ scale: 1.03, zIndex: 100, boxShadow: '6px 6px 0 #1C1C1E', backgroundColor: '#FFF9C4' }}
+                                    whileDrag={{ scale: 1.05, zIndex: 100, boxShadow: '6px 6px 0 #1C1C1E', backgroundColor: '#FFF9C4' }}
+                                    dragElastic={0.1}
+                                    dragMomentum={false}
                                 >
-                                    <span className="flex items-center justify-center w-6 h-6 md:w-8 md:h-8 bg-blue-500 text-white font-black rounded-lg text-xs md:text-sm border-2 border-black flex-none">
+                                    <span className="flex items-center justify-center w-8 h-8 md:w-8 md:h-8 bg-blue-500 text-white font-black rounded-lg text-sm md:text-sm border-2 border-black flex-none">
                                         {index + 1}
                                     </span>
                                     <span className="flex-1 text-black leading-tight">{item.text}</span>
-                                    <GripVertical className="w-4 h-4 md:w-5 md:h-5 text-gray-400 flex-none" />
+                                    <GripVertical className="w-6 h-6 md:w-5 md:h-5 text-gray-400 flex-none" />
                                 </Reorder.Item>
                             ))}
                         </Reorder.Group>

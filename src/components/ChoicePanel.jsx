@@ -22,9 +22,12 @@ export function ChoicePanel({ speaker, question, choices, correctIndex, onCorrec
 
     const handleChoice = (index) => {
         if (showFeedback) return;
-
         setSelectedIndex(index);
-        const correct = normalizedChoices[index]?.correct === true;
+    };
+
+    const handleSubmit = () => {
+        if (selectedIndex === null || showFeedback) return;
+        const correct = normalizedChoices[selectedIndex]?.correct === true;
         setIsCorrect(correct);
         setShowFeedback(true);
     };
@@ -103,6 +106,22 @@ export function ChoicePanel({ speaker, question, choices, correctIndex, onCorrec
                         ))}
                     </div>
                 </div>
+
+                {/* Submit Button - Shows when answer is selected but before feedback */}
+                {selectedIndex !== null && !showFeedback && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-4 md:mt-6 text-center"
+                    >
+                        <button
+                            onClick={handleSubmit}
+                            className="bg-yellow-400 text-black px-8 py-3 md:px-12 md:py-4 rounded-2xl border-4 border-black font-black text-lg md:text-xl shadow-[4px_4px_0px_#1C1C1E] hover:shadow-[2px_2px_0px_#1C1C1E] hover:translate-y-1 transition-all"
+                        >
+                            SUBMIT ANSWER
+                        </button>
+                    </motion.div>
+                )}
 
                 {/* Feedback */}
                 <AnimatePresence>
