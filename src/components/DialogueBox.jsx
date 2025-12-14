@@ -39,7 +39,7 @@ function HumanPortrait({ type, mood = 'happy', isActive = false }) {
 }
 
 // Human dialogue with BIG side portraits - also used for narration
-function HumanDialogue({ speaker, text, onContinue, mood, isNarration = false, image }) {
+function HumanDialogue({ speaker, text, onContinue, mood, isNarration = false, image, hideDoctor = false }) {
     const name = isNarration ? 'Narrator' : characterNames[speaker];
     const accentColor = isNarration ? '#FFCC00' : characterColors[speaker];
 
@@ -134,13 +134,16 @@ function HumanDialogue({ speaker, text, onContinue, mood, isNarration = false, i
                 </div>
 
                 {/* Doctor on right - full height */}
-                <div className="h-full border-l-4 border-black overflow-hidden hidden md:block">
-                    <HumanPortrait
-                        type="doctor"
-                        mood={doctorActive ? mood : 'happy'}
-                        isActive={doctorActive}
-                    />
-                </div>
+                {/* Doctor on right - full height */}
+                {!hideDoctor && (
+                    <div className="h-full border-l-4 border-black overflow-hidden hidden md:block">
+                        <HumanPortrait
+                            type="doctor"
+                            mood={doctorActive ? mood : 'happy'}
+                            isActive={doctorActive}
+                        />
+                    </div>
+                )}
             </div>
         );
     }
@@ -294,7 +297,7 @@ function CellDialogue({ speaker, text, onContinue, mood, image }) {
 }
 
 // Main DialogueBox
-export function DialogueBox({ speaker, text, onContinue, showContinue = true, isSameSpeaker = false, image }) {
+export function DialogueBox({ speaker, text, onContinue, showContinue = true, isSameSpeaker = false, image, hideDoctor = false }) {
     const mood = detectMoodFromText(text);
 
     // Narrator uses same layout as humans but with both dimmed
@@ -307,6 +310,7 @@ export function DialogueBox({ speaker, text, onContinue, showContinue = true, is
                 mood="happy"
                 isNarration={true}
                 image={image}
+                hideDoctor={hideDoctor}
             />
         );
     }
@@ -319,6 +323,7 @@ export function DialogueBox({ speaker, text, onContinue, showContinue = true, is
                 onContinue={onContinue}
                 mood={mood}
                 image={image}
+                hideDoctor={hideDoctor}
             />
         );
     }
@@ -341,4 +346,5 @@ DialogueBox.propTypes = {
     showContinue: PropTypes.bool,
     isSameSpeaker: PropTypes.bool,
     image: PropTypes.string,
+    hideDoctor: PropTypes.bool,
 };

@@ -36,3 +36,4 @@ export { default as ReadyScreen } from './ReadyScreen';
 export { default as ShootingGame } from './ShootingGame';
 export { default as AnimationScene } from './AnimationScene';
 export { default as CertificateView } from './CertificateView';
+export { default as StartScreen } from './StartScreen';

@@ -21,9 +21,11 @@ import {
   ShootingGame,
   AnimationScene,
   CertificateView,
+  StartScreen,
 } from './components';
 
 function App() {
+  const [gameStarted, setGameStarted] = useState(false);
   const [currentAct, setCurrentAct] = useState('act1'); // act1, pathway, victory, gameover
   const [currentSceneId, setCurrentSceneId] = useState('scene_1');
   const [selectedPath, setSelectedPath] = useState(null);
@@ -86,6 +88,7 @@ function App() {
 
   // Handle restart
   const handleRestart = () => {
+    setGameStarted(false);
     setCurrentAct('act1');
     setCurrentSceneId('scene_1');
     setSelectedPath(null);
@@ -148,6 +151,11 @@ function App() {
     totalQuestions: progress.total,
   };
 
+  // Show start screen first
+  if (!gameStarted) {
+    return <StartScreen onStart={() => setGameStarted(true)} />;
+  }
+
   // Render current scene
   const renderScene = () => {
     // Game Over screen
@@ -183,6 +191,7 @@ function App() {
               image={currentScene.image}
               onContinue={() => handleNext(currentScene.next, currentScene.speaker)}
               isSameSpeaker={previousSpeaker === currentScene.speaker}
+              hideDoctor={currentScene.hideDoctor}
             />
           </div>
         );

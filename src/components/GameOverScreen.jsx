@@ -17,9 +17,7 @@ export function GameOverScreen({ onRestart }) {
                 className="relative z-10"
             >
                 <motion.div
-                    animate={{ rotate: [0, 10, -10, 0] }}
-                    transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                    className="text-9xl mb-4 font-black text-white drop-shadow-[8px_8px_0_rgba(0,0,0,0.5)]"
+                    className="text-8xl md:text-9xl mb-4 font-black text-white drop-shadow-[8px_8px_0_rgba(0,0,0,0.5)]"
                 >
                     GAME OVER
                 </motion.div>

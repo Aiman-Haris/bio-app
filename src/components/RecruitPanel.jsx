@@ -29,8 +29,6 @@ export function RecruitPanel({ speaker, text, options, correctCount, successText
                 setSubmitted(true);
                 if (allCorrect && onComplete) {
                     setTimeout(() => onComplete(), 1500);
-                } else if (onWrongAnswer) {
-                    onWrongAnswer();
                 }
             }, 500);
             return () => clearTimeout(timer);
@@ -38,6 +36,7 @@ export function RecruitPanel({ speaker, text, options, correctCount, successText
     }, [selected, correctCount, options, onComplete, onWrongAnswer, submitted]);
 
     const handleRetry = () => {
+        if (onWrongAnswer) onWrongAnswer();
         setSelected([]);
         setSubmitted(false);
         setIsCorrect(false);
@@ -156,7 +155,7 @@ export function RecruitPanel({ speaker, text, options, correctCount, successText
                                         </button>
                                     )}
                                     {!isCorrect && lives <= 1 && (
-                                        <button onClick={() => onWrong && onWrong()} className="btn-pop bg-white text-black text-sm md:text-base px-4 py-2 md:px-6 md:py-2 rounded-xl border-2 border-black">
+                                        <button onClick={() => onWrongAnswer && onWrongAnswer()} className="btn-pop bg-white text-black text-sm md:text-base px-4 py-2 md:px-6 md:py-2 rounded-xl border-2 border-black">
                                             Continue
                                         </button>
                                     )}
