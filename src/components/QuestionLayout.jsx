@@ -9,23 +9,23 @@ function TopHUD({ actName, questionNumber, totalQuestions, lives, maxLives }) {
     const progress = totalQuestions > 0 ? (questionNumber / totalQuestions) * 100 : 0;
 
     return (
-        <div className="bg-white border-b-4 border-black p-4 flex items-center justify-between shadow-lg z-50 relative rounded-b-3xl mx-4 mt-2">
-            {/* Left: Act Name */}
-            <div className="flex items-center gap-4">
-                <div className="bg-black text-white font-black text-xl px-6 py-3 rounded-2xl border-4 border-black transform -rotate-2 hover:rotate-0 transition-transform hidden md:block">
+        <div className="bg-white border-b-4 border-black p-2 md:p-4 flex items-center justify-between shadow-lg z-50 relative rounded-b-xl md:rounded-b-3xl mx-2 md:mx-4 mt-1 md:mt-2">
+            {/* Left: Act Name (Desktop Only) */}
+            <div className="items-center gap-4 hidden md:flex">
+                <div className="bg-black text-white font-black text-xl px-6 py-3 rounded-2xl border-4 border-black transform -rotate-2 hover:rotate-0 transition-transform">
                     {actName || 'ACT 1'}
                 </div>
             </div>
 
             {/* Center: Progress Bar */}
-            <div className="flex-1 max-w-2xl mx-8">
-                <div className="flex items-center justify-between mb-2 px-2">
-                    <span className="font-black text-sm uppercase tracking-wider">Mission Progress</span>
-                    <span className="font-black text-sm bg-yellow-300 px-2 rounded-md border-2 border-black">{Math.round(progress)}%</span>
+            <div className="flex-1 mx-2 md:mx-8">
+                <div className="flex items-center justify-between mb-1 md:mb-2 px-1">
+                    <span className="font-black text-sm uppercase tracking-wider hidden md:block">Mission Progress</span>
+                    <span className="font-black text-[10px] md:text-sm bg-yellow-300 px-1.5 py-0.5 md:px-2 rounded-md border-2 border-black ml-auto md:ml-0">{Math.round(progress)}%</span>
                 </div>
-                <div className="h-6 w-full bg-gray-100 border-4 border-black rounded-full overflow-hidden relative">
+                <div className="h-3 md:h-6 w-full bg-gray-100 border-2 md:border-4 border-black rounded-full overflow-hidden relative">
                     <motion.div
-                        className="h-full bg-green-400 border-r-4 border-black"
+                        className="h-full bg-green-400 border-r-2 md:border-r-4 border-black"
                         initial={{ width: 0 }}
                         animate={{ width: `${progress}%` }}
                         transition={{ type: 'spring', stiffness: 50 }}
@@ -34,7 +34,7 @@ function TopHUD({ actName, questionNumber, totalQuestions, lives, maxLives }) {
             </div>
 
             {/* Right: Lives */}
-            <div className="flex items-center gap-3 bg-yellow-300 border-4 border-black px-6 py-3 rounded-2xl shadow-[4px_4px_0_0_rgba(0,0,0,1)] transform rotate-2">
+            <div className="flex items-center gap-1 md:gap-3 bg-yellow-300 border-2 md:border-4 border-black px-3 py-1.5 md:px-6 md:py-3 rounded-xl md:rounded-2xl shadow-[2px_2px_0_0_rgba(0,0,0,1)] md:shadow-[4px_4px_0_0_rgba(0,0,0,1)] transform md:rotate-2">
                 <span className="font-black uppercase tracking-wider hidden md:inline">Lives</span>
                 <div className="flex gap-1">
                     {[...Array(maxLives)].map((_, i) => (
@@ -45,7 +45,7 @@ function TopHUD({ actName, questionNumber, totalQuestions, lives, maxLives }) {
                             transition={{ delay: i * 0.1 }}
                         >
                             <Heart
-                                className={`w-7 h-7 ${i < lives ? 'fill-red-500 text-black' : 'text-black/20 fill-none'}`}
+                                className={`w-5 h-5 md:w-7 md:h-7 ${i < lives ? 'fill-red-500 text-black' : 'text-black/20 fill-none'}`}
                                 strokeWidth={3}
                             />
                         </motion.div>
