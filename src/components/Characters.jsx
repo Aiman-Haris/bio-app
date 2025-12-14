@@ -60,7 +60,7 @@ export const cellCharacters = {
     helperT: { component: Ghost, color: '#34C759' }, // Helper T is default/standard
     cytotoxicT: { component: Ghost, color: '#FF3B30', Icon: Swords },
     bCell: { component: Ghost, color: '#007AFF', Icon: Shield },
-    pathogen: { component: Planet, color: '#FF3B30', Icon: Zap }, // Changed to Red to blend in better with "active" options or just look vibrant
+    pathogen: { component: Planet, color: '#FF3B30' }, // Red color to stand out
     phagocyte: { component: Ghost, color: '#00C7BE', Icon: Activity },
 };
 

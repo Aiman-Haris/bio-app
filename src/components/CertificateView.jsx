@@ -72,16 +72,16 @@ export default function CertificateView({ title, description, onRestart }) {
             </div>
 
             {/* Buttons - Hidden when printing */}
-            <div className="mt-8 flex gap-4 print:hidden">
+            <div className="mt-8 flex flex-col md:flex-row gap-3 md:gap-4 print:hidden w-full md:w-auto">
                 <Button
                     onClick={handlePrint}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-bold"
+                    className="w-full md:w-auto bg-blue-600 hover:bg-blue-700 text-white px-6 py-4 md:px-8 md:py-3 rounded-lg font-bold text-base"
                 >
                     Print Certificate
                 </Button>
                 <Button
                     onClick={onRestart}
-                    className="bg-gray-800 hover:bg-gray-900 text-white px-8 py-3 rounded-lg font-bold"
+                    className="w-full md:w-auto bg-gray-800 hover:bg-gray-900 text-white px-6 py-4 md:px-8 md:py-3 rounded-lg font-bold text-base"
                 >
                     Play Again
                 </Button>

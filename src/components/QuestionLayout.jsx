@@ -60,7 +60,7 @@ function TopHUD({ actName, questionNumber, totalQuestions, lives, maxLives }) {
 const MemoizedMascot = React.memo(function Mascot({ mood, color, Component, reaction, bubbleText }) {
     return (
         <motion.div
-            className="fixed bottom-[-10px] right-[-10px] md:right-4 md:bottom-[-20px] z-20 pointer-events-none origin-bottom-right transform scale-75 md:scale-100"
+            className="fixed bottom-[-10px] right-[-10px] md:right-4 md:bottom-[-20px] z-20 pointer-events-none origin-bottom-right transform scale-50 md:scale-100"
             animate={
                 reaction === 'happy' ? { y: [0, -20, 0] } :
                     reaction === 'sad' ? { x: [-5, 5, -5, 5, 0] } :
