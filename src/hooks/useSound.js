@@ -2,9 +2,9 @@ import { useRef, useCallback, useEffect } from 'react';
 
 // Sound file paths
 const SOUNDS = {
-    click: '/sounds/click.wav',
-    correct: '/sounds/correct.wav',
-    wrong: '/sounds/wrong.wav',
+    click: 'sounds/click.wav',
+    correct: 'sounds/correct.wav',
+    wrong: 'sounds/wrong.wav',
 };
 
 // Global audio instances (singleton pattern for performance)

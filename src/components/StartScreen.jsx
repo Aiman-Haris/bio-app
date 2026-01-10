@@ -148,14 +148,14 @@ export function StartScreen({ onStart }) {
                             <div className="flex flex-col gap-4 bg-blue-50 p-4 rounded-xl border-2 border-black">
                                 <h3 className="text-xl font-black text-center bg-blue-500 text-white py-2 rounded-lg border-2 border-black shadow-[4px_4px_0px_#000]">CELL MEDIATED</h3>
                                 <div className="bg-white p-2 rounded-lg border-2 border-dashed border-black/20">
-                                    <img src="/visual notes/cell mediated.png" alt="Cell Mediated Response" className="w-full h-auto rounded" />
+                                    <img src="visual notes/cell mediated.png" alt="Cell Mediated Response" className="w-full h-auto rounded" />
                                 </div>
                             </div>
 
                             <div className="flex flex-col gap-4 bg-green-50 p-4 rounded-xl border-2 border-black">
                                 <h3 className="text-xl font-black text-center bg-green-500 text-white py-2 rounded-lg border-2 border-black shadow-[4px_4px_0px_#000]">HUMORAL</h3>
                                 <div className="bg-white p-2 rounded-lg border-2 border-dashed border-black/20">
-                                    <img src="/visual notes/humoral.png" alt="Humoral Response" className="w-full h-auto rounded" />
+                                    <img src="visual notes/humoral.png" alt="Humoral Response" className="w-full h-auto rounded" />
                                 </div>
                             </div>
                         </div>
