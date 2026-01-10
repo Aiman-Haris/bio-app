@@ -164,8 +164,13 @@ export function StartScreen({ onStart }) {
             )}
 
             {/* FOOTER */}
-            <div className="absolute bottom-6 font-bold text-black/30 tracking-widest text-sm uppercase">
-                Defend The Body • Survive The Invasion
+            <div className="absolute bottom-4 flex flex-col items-center gap-1">
+                <div className="font-bold text-black/20 tracking-widest text-[10px] uppercase">
+                    Defend The Body • Survive The Invasion
+                </div>
+                <div className="font-medium text-black/50 tracking-tight text-xs">
+                    by AiSyAmMasYin, KML Biology Unit
+                </div>
             </div>
 
             {/* Sound hint */}
