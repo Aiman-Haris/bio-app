@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { characterColors, characterNames } from './Characters';
 import QuestionLayout from './QuestionLayout';
+import useSound from '../hooks/useSound';
 
 export function FillBlankPanel({ speaker, question, correctAnswer, onCorrect, onWrong, lives, actName, questionNumber, totalQuestions }) {
     const [answer, setAnswer] = useState('');
     const [showFeedback, setShowFeedback] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
+    const { play } = useSound();
 
     const accentColor = characterColors[speaker] || '#00C7BE';
     const name = characterNames[speaker] || 'Fill in the blank';
@@ -19,6 +21,11 @@ export function FillBlankPanel({ speaker, question, correctAnswer, onCorrect, on
         const correct = answer.trim().toLowerCase() === correctAnswer.toLowerCase();
         setIsCorrect(correct);
         setShowFeedback(true);
+
+        // Play feedback sound
+        setTimeout(() => {
+            play(correct ? 'correct' : 'wrong', 0.5);
+        }, 100);
     };
 
     const handleContinue = () => {

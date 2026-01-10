@@ -117,6 +117,15 @@ export const storyData = {
             ],
             correctCount: 3,
             successText: "Correct! These are our scouts.",
+            next: 'cm_1_anim',
+        },
+        // Animation after Q1 - Shows the APCs
+        {
+            id: 'cm_1_anim',
+            type: 'gif_animation',
+            background: 'bloodstream',
+            gifSrc: '/media/animations/animation 1.gif',
+            text: "Antigen-Presenting Cells (APCs): Macrophage, Dendritic Cell, and Phagocyte - These cells can engulf pathogens and present antigens to other immune cells.",
             next: 'cm_2',
         },
         // Q2: Fill Blank
@@ -128,15 +137,15 @@ export const storyData = {
             text: "After macrophage engulfs the pathogen, what will it do? It degrades the pathogens into _____ fragments.",
             answer: 'antigen',
             hint: 'A substance that induces an immune response',
-            next: 'cm_5_anim',
+            next: 'cm_2_anim',
         },
-        // Animation 1
+        // Animation after Q2 - APC presents antigen
         {
-            id: 'cm_5_anim',
-            type: 'animation',
+            id: 'cm_2_anim',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'apc_present',
-            text: "The Macrophage processes the pathogen and presents the ANTIGEN on its surface using an MHC Class II molecule.",
+            gifSrc: '/media/animations/animation 2.gif',
+            text: "APC (Macrophage) presents ANTIGEN: After engulfing and degrading the pathogen, the macrophage breaks it down into antigen fragments and displays them on its surface.",
             next: 'cm_6',
         },
         // Q3: MCQ
@@ -153,11 +162,20 @@ export const storyData = {
                 { id: 'w3', text: 'Membrane attack complex', correct: false },
             ],
             feedback: "Correct! This complex acts like a 'wanted poster'.",
-            next: 'cm_7_anim', // Skipped redundant anim, already showed presentation
+            next: 'cm_6_anim',
         },
-        // Q4: MCQ (Connected directly)
+        // Animation 3: MHC-Antigen complex
         {
-            id: 'cm_7_anim', // Re-using ID flow
+            id: 'cm_6_anim',
+            type: 'gif_animation',
+            background: 'bloodstream',
+            gifSrc: '/media/animations/animation 3.gif',
+            text: "Macrophage displays antigen fragments on Class II MHC: The MHC-antigen complex is now ready to present to other immune cells. Think of it like the 'wanted poster' to other immune cells.",
+            next: 'cm_7',
+        },
+        // Q4: MCQ 
+        {
+            id: 'cm_7',
             type: 'choice',
             background: 'bloodstream',
             speaker: 'doctor',
@@ -167,15 +185,15 @@ export const storyData = {
                 { id: 'w2', text: 'Natural Killer cell', correct: false },
                 { id: 'c1', text: 'Helper T cell', correct: true },
             ],
-            next: 'cm_8_anim',
+            next: 'cm_7_anim',
         },
-        // Animation 2: Binding
+        // Animation 4: Helper T cell binding
         {
-            id: 'cm_8_anim',
-            type: 'animation',
+            id: 'cm_7_anim',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'binding',
-            text: "The Helper T Cell physically binds to the MHC-Antigen complex using its TCR and CD4 receptor.",
+            gifSrc: '/media/animations/animation 4.gif',
+            text: "Helper T Cell binds to the Class II MHC complex on APCs: The Helper T cell recognizes and attaches to the MHC-antigen complex displayed on the APC surface.",
             next: 'cm_9',
         },
         // Q5: MCQ
@@ -206,15 +224,15 @@ export const storyData = {
                 { id: 'c1', text: 'CD4', correct: true },
                 { id: 'w3', text: 'CD16', correct: false },
             ],
-            next: 'cm_11_anim',
+            next: 'cm_10_anim',
         },
-        // Animation 3: Activation/Signaling
+        // Animation 5: IL-1 and CD4
         {
-            id: 'cm_11_anim',
-            type: 'animation',
+            id: 'cm_10_anim',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'helper_activate',
-            text: "The Helper T Cell receives the IL-1 signal and becomes ACTIVATED, releasing its own IL-2.",
+            gifSrc: '/media/animations/animation 5.gif',
+            text: "APC releases Interleukin-1 (IL-1) that activates Helper T cell and Helper T cell uses CD4 receptor in binding with the MHC: IL-1 provides the activation signal to activate the Helper T cell while CD4 accessory receptor strengthens the binding to Class II MHC.",
             next: 'cm_12',
         },
         // Q7: MCQ
@@ -230,15 +248,15 @@ export const storyData = {
                 { id: 'w2', text: 'Proliferates and differentiates into clones of B cells and memory helper T cell', correct: false },
                 { id: 'w3', text: 'Proliferates and differentiates into clones of cytotoxic T cell and memory helper T cell', correct: false },
             ],
-            next: 'cm_13_anim',
+            next: 'cm_12_anim',
         },
-        // Animation 4: Proliferation
+        // Animation 6: Helper T cell proliferation
         {
-            id: 'cm_13_anim',
-            type: 'animation',
+            id: 'cm_12_anim',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'proliferate_helper',
-            text: "The activated cell divides rapidly (proliferation), creating an army of clones.",
+            gifSrc: '/media/animations/animation 6.gif',
+            text: "Activated Helper T cells proliferate and differentiate: They divide into clones of activated Helper T cells and memory Helper T cells for future immune responses.",
             next: 'cm_15',
         },
         // Q8: MCQ
@@ -254,6 +272,15 @@ export const storyData = {
                 { id: 'w2', text: 'IL-3', correct: false },
                 { id: 'w3', text: 'IL-4', correct: false },
             ],
+            next: 'cm_15_anim',
+        },
+        // Animation 7: IL-2 release
+        {
+            id: 'cm_15_anim',
+            type: 'gif_animation',
+            background: 'bloodstream',
+            gifSrc: '/media/animations/animation 7.gif',
+            text: "Activated Helper T cells release Interleukin-2 (IL-2): IL-2 is a cytokine that signals and activates other immune cells like...?",
             next: 'cm_17',
         },
         // Q9: MCQ
@@ -262,13 +289,22 @@ export const storyData = {
             type: 'choice',
             background: 'bloodstream',
             speaker: 'doctor',
-            text: "IL-2 activates which cells?",
+            text: "In this immune response, IL-2 activates which cells next?",
             choices: [
                 { id: 'w1', text: 'B cells', correct: false },
                 { id: 'c1', text: 'Cytotoxic T cells', correct: true },
                 { id: 'w2', text: 'RBCs', correct: false },
                 { id: 'w3', text: 'Antigen presenting cells', correct: false },
             ],
+            next: 'cm_17_anim',
+        },
+        // Animation 8: IL-2 activates Cytotoxic T cells
+        {
+            id: 'cm_17_anim',
+            type: 'gif_animation',
+            background: 'bloodstream',
+            gifSrc: '/media/animations/animation 8.gif',
+            text: "IL-2 activates Cytotoxic T cells: The cytokine IL-2 released by Helper T cells activates Cytotoxic T cells to prepare them for attacking infected cells.",
             next: 'cm_19_sort',
         },
         // Mini-Game 2: Sorting (Put in order)
@@ -287,7 +323,7 @@ export const storyData = {
                 { id: 's5', text: 'Cytotoxic T activates' },
             ],
             correctOrder: ['s1', 's2', 's3', 's6', 's4', 's5'],
-            next: 'cm_21', // Go to Q10, skip ready screen
+            next: 'cm_21',
         },
         // Transition Quote/Ready
         {
@@ -310,15 +346,15 @@ export const storyData = {
                 { id: 'c1', text: 'Proliferates and differentiates into clones of activated cytotoxic T cell and memory cytotoxic T cell', correct: true },
                 { id: 'w3', text: 'Proliferates and differentiates into clones of helper T cell and memory helper T cell', correct: false },
             ],
-            next: 'cm_22_anim',
+            next: 'cm_21_anim',
         },
-        // Animation 5: Proliferation Cytotoxic
+        // Animation 9: Cytotoxic T cell Proliferation
         {
-            id: 'cm_22_anim',
-            type: 'animation',
+            id: 'cm_21_anim',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'proliferate_cytotoxic',
-            text: "The Killer T Cells multiply, ready to hunt down infected cells.",
+            gifSrc: '/media/animations/animation 9.gif',
+            text: "Activated Cytotoxic T cells proliferate and differentiate: They divide rapidly into an army of activated Cytotoxic T cells and memory cells, ready to hunt the pathogen.",
             next: 'cm_23',
         },
         // Q11: MCQ
@@ -334,6 +370,15 @@ export const storyData = {
                 { id: 'w2', text: 'CD6', correct: false },
                 { id: 'w3', text: 'CD14', correct: false },
             ],
+            next: 'cm_23_anim',
+        },
+        // Animation 10: CD8 binding
+        {
+            id: 'cm_23_anim',
+            type: 'gif_animation',
+            background: 'bloodstream',
+            gifSrc: '/media/animations/animation 10.gif',
+            text: "Activated Cytotoxic T cell uses CD8 accessory receptor: The CD8 receptor helps bind the Cytotoxic T cell to the Class I MHC of the infected cell.",
             next: 'cm_25',
         },
         // Q12: MCQ
@@ -349,6 +394,15 @@ export const storyData = {
                 { id: 'c1', text: 'Perforin and granzymes', correct: true },
                 { id: 'w3', text: 'Perforin and granzyme C', correct: false },
             ],
+            next: 'cm_25_anim',
+        },
+        // Animation 11: Perforin/Granzymes
+        {
+            id: 'cm_25_anim',
+            type: 'gif_animation',
+            background: 'bloodstream',
+            gifSrc: '/media/animations/animation 11.gif',
+            text: "Cytotoxic T Cell releases Perforin and Granzymes: These toxic proteins are released directly towards the infected cell.",
             next: 'cm_25_game',
         },
         // Shooting Game: Eliminate infected cells
@@ -359,29 +413,30 @@ export const storyData = {
             instruction: "Eliminate infected cells (RED) only!",
             next: 'cm_27',
         },
-        // Q13: Ordering - Perforin sequence
+        // Q13: MCQ - Perforin effects (All correct)
         {
             id: 'cm_27',
-            type: 'ordering',
+            type: 'choice',
+            isMultiSelect: true,
             background: 'bloodstream',
             speaker: 'doctor',
-            text: "Put the steps of how perforin works in the correct order:",
-            items: [
-                { id: 'p1', text: 'Creates pores in the infected cell membrane' },
-                { id: 'p2', text: 'Causes water and ions to enter the cell' },
-                { id: 'p3', text: 'Causes cell lysis or apoptosis' },
-                { id: 'p4', text: 'Cytolysis' },
+            text: "How does Perforin help destroy the infected cell? (Select ALL correct statements)",
+            choices: [
+                { id: 'p1', text: 'Creates pores in the infected cell membrane', correct: true },
+                { id: 'p2', text: 'Causes water and ions to enter the cell', correct: true },
+                { id: 'p3', text: 'Causes cell lysis or apoptosis', correct: true },
+                { id: 'p4', text: 'Triggers cytolysis (bursting of cell)', correct: true },
             ],
-            correctOrder: ['p1', 'p2', 'p3', 'p4'],
-            next: 'cm_28_anim',
+            feedback: "Correct! Perforin creates pores that lead to cell destruction.",
+            next: 'cm_27_anim',
         },
-        // Animation 6: Finale Lysis
+        // Animation 12: Lysis/Steps
         {
-            id: 'cm_28_anim',
-            type: 'animation',
+            id: 'cm_27_anim',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'lysis',
-            text: "Perforin punches holes in the membrane, and Granzymes trigger the cell to self-destruct (Apoptosis). Victory!",
+            gifSrc: '/media/animations/animation 12.gif',
+            text: "Perforin creates pores, causing water entry and cell lysis: The infected cell swells and bursts (cytolysis) or self-destructs (apoptosis).",
             next: 'cm_certificate',
         },
         // Certificate
@@ -402,14 +457,6 @@ export const storyData = {
             background: 'bloodstream',
             speaker: 'narrator',
             text: "When bacteria invade, macrophage, dendritic cells and phagocytes engulf it and degrade it into antigen fragments.",
-            next: 'hm_0_anim',
-        },
-        {
-            id: 'hm_0_anim',
-            type: 'animation',
-            background: 'bloodstream',
-            animationName: 'engulfing',
-            text: "The macrophage engulfs the invading pathogen through phagocytosis.",
             next: 'hm_1',
         },
         // Q1: What does macrophage do after engulfing?
@@ -427,12 +474,13 @@ export const storyData = {
             ],
             next: 'hm_1_anim',
         },
+        // Animation 2: Degradation
         {
             id: 'hm_1_anim',
-            type: 'animation',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'apc_present',
-            text: "The APC/Macrophage processes and presents the antigen fragments.",
+            gifSrc: '/media/animations/animation 2.gif',
+            text: "Macrophage degrades the pathogens into antigen fragments.",
             next: 'hm_2',
         },
         // Q2: Which MHC class? (Fill in the blank)
@@ -446,12 +494,13 @@ export const storyData = {
             hint: 'A Roman numeral (hint: not I, not III)',
             next: 'hm_2_anim',
         },
+        // Animation 3: MHC II Presentation
         {
             id: 'hm_2_anim',
-            type: 'animation',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'apc_present',
-            text: "The macrophage displays the antigen fragments on Class II MHC molecules.",
+            gifSrc: '/media/animations/animation 3.gif',
+            text: "APCs present antigen fragments on Class II MHC molecules.",
             next: 'hm_3',
         },
         // Q3: Which cell binds to MHC II?
@@ -468,12 +517,13 @@ export const storyData = {
             ],
             next: 'hm_3_anim',
         },
+        // Animation 4: Helper T Binding
         {
             id: 'hm_3_anim',
-            type: 'animation',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'binding',
-            text: "The Helper T Cell binds to the MHC-Antigen complex on the APC.",
+            gifSrc: '/media/animations/animation 4.gif',
+            text: "Helper T cell binds to the class II MHC complex on APCs.",
             next: 'hm_4',
         },
         // Q4: Which signal does APC release?
@@ -506,12 +556,13 @@ export const storyData = {
             ],
             next: 'hm_5_anim',
         },
+        // Animation 5: CD4 receptor
         {
             id: 'hm_5_anim',
-            type: 'animation',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'helper_activate',
-            text: "The Helper T Cell becomes activated after receiving the IL-1 signal.",
+            gifSrc: '/media/animations/animation 5.gif',
+            text: "CD4 accessory receptor is involved in this binding.",
             next: 'hm_6',
         },
         // Q6: What happens to activated Helper T?
@@ -529,20 +580,13 @@ export const storyData = {
             ],
             next: 'hm_6_anim',
         },
+        // Animation 13: Helper T Proliferation
         {
             id: 'hm_6_anim',
-            type: 'animation',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'proliferate_helper',
-            text: "The Helper T Cell proliferates and differentiates into activated and memory cells.",
-            next: 'hm_6_anim2',
-        },
-        {
-            id: 'hm_6_anim2',
-            type: 'animation',
-            background: 'bloodstream',
-            animationName: 'b_cell_binding',
-            text: "Meanwhile, the pathogen binds to receptors on B cells. The B cell takes up some antigen through endocytosis and presents the antigen-MHC II complex on its surface.",
+            gifSrc: '/media/animations/animation 13.gif',
+            text: "Activated Helper T cells proliferate and differentiate into clones of activated helper T cells and memory helper T cells.",
             next: 'hm_7',
         },
         // Q7: Accessory protein for B cell binding
@@ -560,12 +604,13 @@ export const storyData = {
             ],
             next: 'hm_7_anim',
         },
+        // Animation 14: B Cell Binding
         {
             id: 'hm_7_anim',
-            type: 'animation',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'binding',
-            text: "The activated Helper T Cell binds to the B Cell using its TCR and CD4 receptor.",
+            gifSrc: '/media/animations/animation 14.gif',
+            text: "Activated helper T cell binds to antigen-MHC complex on B cell with the help of CD4 accessory protein.",
             next: 'hm_8',
         },
         // Q8: Which cytokines released?
@@ -583,12 +628,13 @@ export const storyData = {
             ],
             next: 'hm_8_anim',
         },
+        // Animation 15: IL-2 Release
         {
             id: 'hm_8_anim',
-            type: 'animation',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'helper_activate',
-            text: "The Helper T Cell releases IL-2 to activate the B Cell.",
+            gifSrc: '/media/animations/animation 15.gif',
+            text: "The activated helper T cells release IL-2 cytokines.",
             next: 'hm_9',
         },
         // Q9: Which cells does IL-2 activate?
@@ -597,7 +643,7 @@ export const storyData = {
             type: 'choice',
             background: 'bloodstream',
             speaker: 'doctor',
-            text: "IL-2 activates which cells?",
+            text: "In this immune response, IL-2 activates which cells next?",
             choices: [
                 { id: 'w1', text: 'Cytotoxic T cells', correct: false },
                 { id: 'w2', text: 'RBCs', correct: false },
@@ -621,12 +667,13 @@ export const storyData = {
             ],
             next: 'hm_10_anim',
         },
+        // Animation 16: B Cell Proliferation
         {
             id: 'hm_10_anim',
-            type: 'animation',
+            type: 'gif_animation',
             background: 'bloodstream',
-            animationName: 'proliferate_b_cell',
-            text: "The activated B Cell proliferates and differentiates into Plasma cells and Memory B cells.",
+            gifSrc: '/media/animations/animation 16.gif',
+            text: "Activated B cells proliferate and differentiate into plasma cells and memory B cells.",
             next: 'hm_10_ordering',
         },
         // Ordering: B cell activation sequence
@@ -660,14 +707,6 @@ export const storyData = {
                 { id: 'c1', text: 'Antibodies', correct: true },
                 { id: 'w3', text: 'Epitopes', correct: false },
             ],
-            next: 'hm_11_anim',
-        },
-        {
-            id: 'hm_11_anim',
-            type: 'animation',
-            background: 'bloodstream',
-            animationName: 'antibody_production',
-            text: "Plasma cells secrete antibodies into the bloodstream.",
             next: 'hm_12',
         },
         // Q12: How do antibodies work? (Recruit - choose 3)
@@ -685,6 +724,15 @@ export const storyData = {
             ],
             correctCount: 3,
             successText: "Correct! Neutralization, Opsonization, and Complement Activation work together to eliminate pathogens!",
+            next: 'hm_12_anim',
+        },
+        // Animation 17: Antibody Action
+        {
+            id: 'hm_12_anim',
+            type: 'gif_animation',
+            background: 'bloodstream',
+            gifSrc: '/media/animations/animation 17.gif',
+            text: "Antibodies work by Neutralization, Opsonization, and Activation of the complement system.",
             next: 'hm_certificate',
         },
         // Certificate
@@ -692,18 +740,18 @@ export const storyData = {
             id: 'hm_certificate',
             type: 'certificate',
             title: 'Humoral Response Specialist',
-            description: 'You have mastered the art of antibody-mediated defense! Ivan is now well!',
+            description: 'You have mastered the art of antibody-mediated defense!',
         },
     ],
 
     victory: {
         cellMediated: {
             title: 'Infected Cell Destroyed!',
-            description: 'The Cytotoxic T Cells successfully eliminated the infected cells using Perforin and Granzymes. Ivan is on the road to recovery!',
+            description: 'The Cytotoxic T Cells successfully eliminated the infected cells using Perforin and Granzymes.',
         },
         humoral: {
             title: 'Pathogens Eliminated!',
-            description: 'The antibodies neutralized, marked, and destroyed the extracellular pathogens. Ivan is on the road to recovery!',
+            description: 'The antibodies neutralized, marked, and destroyed the extracellular pathogens.',
         },
     },
 };

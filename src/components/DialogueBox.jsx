@@ -73,7 +73,7 @@ function HumanDialogue({ speaker, text, onContinue, mood, isNarration = false, i
                             >
                                 {image === 'raw_meat_zoom' ? (
                                     <img
-                                        src="/raw_meat_zoom.png"
+                                        src="/media/images/raw_meat_zoom.png"
                                         alt="Raw Meat Zoom"
                                         className="w-full h-full object-cover"
                                     />
@@ -175,7 +175,7 @@ function HumanDialogue({ speaker, text, onContinue, mood, isNarration = false, i
                     {image && (
                         <div className="bg-gray-100 border-2 border-black rounded-lg mb-3 h-28 flex items-center justify-center overflow-hidden">
                             {image === 'raw_meat_zoom' ?
-                                <img src="/raw_meat_zoom.png" className="w-full h-full object-cover" /> :
+                                <img src="/media/images/raw_meat_zoom.png" className="w-full h-full object-cover" /> :
                                 <span className="text-2xl">{image}</span>
                             }
                         </div>

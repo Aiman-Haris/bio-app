@@ -5,14 +5,17 @@ import { isMobile } from 'react-device-detect';
 import { Check, RefreshCw } from 'lucide-react';
 import { CharacterAvatar, characterColors } from './Characters';
 import QuestionLayout from './QuestionLayout';
+import useSound from '../hooks/useSound';
 
 export function RecruitPanel({ speaker, text, options, correctCount, successText, onComplete, onWrongAnswer, lives, actName, questionNumber, totalQuestions }) {
     const [selected, setSelected] = useState([]);
     const [submitted, setSubmitted] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
+    const { play } = useSound();
 
     const toggleSelect = (optionId) => {
         if (submitted) return;
+        play('click', 0.3);
         if (selected.includes(optionId)) {
             setSelected(selected.filter(id => id !== optionId));
         } else if (selected.length < correctCount) {
@@ -27,13 +30,17 @@ export function RecruitPanel({ speaker, text, options, correctCount, successText
                 const allCorrect = selected.every(id => correctAnswers.includes(id));
                 setIsCorrect(allCorrect);
                 setSubmitted(true);
-                if (allCorrect && onComplete) {
-                    setTimeout(() => onComplete(), 1500);
-                }
+
+                // Play feedback sound
+                setTimeout(() => {
+                    play(allCorrect ? 'correct' : 'wrong', 0.5);
+                }, 200);
+
+                // Don't auto-trigger onComplete - let user click Continue button
             }, 500);
             return () => clearTimeout(timer);
         }
-    }, [selected, correctCount, options, onComplete, onWrongAnswer, submitted]);
+    }, [selected, correctCount, options, onComplete, onWrongAnswer, submitted, play]);
 
     const handleRetry = () => {
         if (onWrongAnswer) onWrongAnswer();

@@ -1,6 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { storyData } from './data/storyData';
+import { MusicProvider, useMusic } from './context/MusicContext';
 import {
   DialogueBox,
   ChoicePanel,
@@ -20,11 +21,15 @@ import {
   ReadyScreen,
   ShootingGame,
   AnimationScene,
+  GifAnimationScene,
   CertificateView,
   StartScreen,
 } from './components';
+import { SkipForward } from 'lucide-react';
 
-function App() {
+// Inner component that uses music context
+function GameContent() {
+  const { playForScene } = useMusic();
   const [gameStarted, setGameStarted] = useState(false);
   const [currentAct, setCurrentAct] = useState('act1'); // act1, pathway, victory, gameover
   const [currentSceneId, setCurrentSceneId] = useState('scene_1');
@@ -52,6 +57,16 @@ function App() {
     const bg = currentScene?.background || 'bloodstream';
     return `scene-${bg}`;
   }, [currentScene, currentAct]);
+
+  // Get current background for music
+  const currentBackground = currentScene?.background || 'bloodstream';
+
+  // Change music when scene background changes
+  useEffect(() => {
+    if (gameStarted && currentBackground) {
+      playForScene(currentBackground);
+    }
+  }, [currentBackground, gameStarted, playForScene]);
 
   // Handle advancing to next scene
   const handleNext = (nextId, currentSpeaker) => {
@@ -185,6 +200,15 @@ function App() {
       case 'dialogue':
         return (
           <div className="min-h-screen flex items-center justify-center p-8">
+            {/* Skip Intro Button */}
+            {['scene_1', 'scene_2', 'scene_3'].includes(currentScene?.id) && (
+              <button
+                onClick={() => handleNext('scene_4')}
+                className="fixed top-8 right-8 z-[60] bg-white hover:bg-gray-100 text-black px-4 py-2 rounded-full font-bold flex items-center gap-2 border-2 border-black shadow-[4px_4px_0px_#000] hover:shadow-[2px_2px_0px_#000] hover:translate-y-[2px] transition-all text-sm uppercase tracking-wider"
+              >
+                Skip Intro <SkipForward size={16} strokeWidth={3} />
+              </button>
+            )}
             <DialogueBox
               speaker={currentScene.speaker}
               text={currentScene.text}
@@ -252,6 +276,7 @@ function App() {
             choices={currentScene.choices}
             onCorrect={() => handleNext(currentScene.next)}
             onWrong={handleWrongAnswer}
+            isMultiSelect={currentScene.isMultiSelect}
             {...commonProps}
           />
         );
@@ -378,6 +403,24 @@ function App() {
           />
         );
 
+      case 'animation':
+        return (
+          <AnimationScene
+            animationName={currentScene.animationName}
+            text={currentScene.text}
+            onNext={() => handleNext(currentScene.next)}
+          />
+        );
+
+      case 'gif_animation':
+        return (
+          <GifAnimationScene
+            gifSrc={currentScene.gifSrc}
+            text={currentScene.text}
+            onNext={() => handleNext(currentScene.next)}
+          />
+        );
+
       default:
         return null;
     }
@@ -399,6 +442,15 @@ function App() {
         </motion.div>
       </AnimatePresence>
     </div>
+  );
+}
+
+// Main App wrapper with MusicProvider
+function App() {
+  return (
+    <MusicProvider>
+      <GameContent />
+    </MusicProvider>
   );
 }
 

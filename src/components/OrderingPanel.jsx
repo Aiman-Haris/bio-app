@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { GripVertical } from 'lucide-react';
 import { characterColors } from './Characters';
 import QuestionLayout from './QuestionLayout';
+import useSound from '../hooks/useSound';
 
 // Fisher-Yates shuffle
 function shuffleArray(array) {
@@ -47,6 +48,7 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
     const [orderedItems, setOrderedItems] = useState(() => shuffleArray(normalizedItems));
     const [showFeedback, setShowFeedback] = useState(false);
     const [isCorrect, setIsCorrect] = useState(false);
+    const { play } = useSound();
 
     const accentColor = characterColors[speaker] || '#007AFF';
 
@@ -58,6 +60,11 @@ export function OrderingPanel({ speaker, instruction, items, correctOrder, onCor
         });
         setIsCorrect(correct);
         setShowFeedback(true);
+
+        // Play feedback sound
+        setTimeout(() => {
+            play(correct ? 'correct' : 'wrong', 0.5);
+        }, 100);
     };
 
     const handleContinue = () => {
