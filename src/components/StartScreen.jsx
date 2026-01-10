@@ -6,7 +6,7 @@ import { X, Volume2, VolumeX } from 'lucide-react';
 import useSound from '../hooks/useSound';
 import { useMusic } from '../context/MusicContext';
 
-export function StartScreen({ onStart }) {
+export function StartScreen({ onStart, preloaded, loadProgress }) {
     const { play } = useSound();
     const { playMood, stop, isPlaying, toggleMute, isMuted } = useMusic();
     const [musicStarted, setMusicStarted] = useState(false);
@@ -106,14 +106,32 @@ export function StartScreen({ onStart }) {
                 {/* BUTTONS */}
                 <div className="flex flex-col gap-4 items-center w-full max-w-sm">
                     {/* START BUTTON */}
-                    <motion.button
-                        onClick={handleStart}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="w-full relative bg-yellow-400 hover:bg-yellow-500 text-black px-10 py-4 rounded-xl font-black text-2xl md:text-3xl border-4 border-black shadow-[6px_6px_0px_#000] hover:shadow-[3px_3px_0px_#000] hover:translate-y-[3px] active:translate-y-[6px] active:shadow-none transition-all uppercase tracking-widest"
-                    >
-                        PLAY GAME
-                    </motion.button>
+                    <div className="w-full relative">
+                        <motion.button
+                            onClick={handleStart}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="w-full relative bg-yellow-400 hover:bg-yellow-500 text-black px-10 py-4 rounded-xl font-black text-2xl md:text-3xl border-4 border-black shadow-[6px_6px_0px_#000] hover:shadow-[3px_3px_0px_#000] hover:translate-y-[3px] active:translate-y-[6px] active:shadow-none transition-all uppercase tracking-widest disabled:opacity-70 disabled:cursor-wait"
+                        >
+                            PLAY GAME
+                        </motion.button>
+
+                        {!preloaded && (
+                            <div className="absolute -bottom-6 left-0 w-full px-2">
+                                <div className="h-2 bg-black/10 rounded-full border-2 border-black overflow-hidden relative">
+                                    <motion.div
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${loadProgress}%` }}
+                                        className="absolute inset-0 bg-black"
+                                    />
+                                </div>
+                                <div className="text-[10px] font-black text-black uppercase mt-1 flex justify-between">
+                                    <span>Caching Assets...</span>
+                                    <span>{loadProgress}%</span>
+                                </div>
+                            </div>
+                        )}
+                    </div>
 
                     {/* NOTES BUTTON */}
                     <motion.button
@@ -186,6 +204,8 @@ export function StartScreen({ onStart }) {
 
 StartScreen.propTypes = {
     onStart: PropTypes.func.isRequired,
+    preloaded: PropTypes.bool,
+    loadProgress: PropTypes.number,
 };
 
 export default StartScreen;

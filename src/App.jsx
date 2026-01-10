@@ -27,8 +27,11 @@ import {
 } from './components';
 import { SkipForward } from 'lucide-react';
 
+import { usePreloadGifs } from './hooks/usePreloadGifs';
+
 // Inner component that uses music context
 function GameContent() {
+  const { preloaded, progress: loadProgress } = usePreloadGifs();
   const { playForScene } = useMusic();
   const [gameStarted, setGameStarted] = useState(false);
   const [currentAct, setCurrentAct] = useState('act1'); // act1, pathway, victory, gameover
@@ -168,7 +171,7 @@ function GameContent() {
 
   // Show start screen first
   if (!gameStarted) {
-    return <StartScreen onStart={() => setGameStarted(true)} />;
+    return <StartScreen onStart={() => setGameStarted(true)} preloaded={preloaded} loadProgress={loadProgress} />;
   }
 
   // Render current scene
